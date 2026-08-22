@@ -1,10 +1,15 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkBase.IdleMode;
+import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Robot;
+import frc.robot.constants.Constants;
+import frc.robot.constants.DriveConstants;
 
 public class Drivetrain extends SubsystemBase {
   
@@ -25,6 +30,18 @@ public class Drivetrain extends SubsystemBase {
 
 
   public Drivetrain() {
+      leftMotor1 = new CANSparkMax(DriveConstants.LEFT_MOTOR_1_ID, MotorType.kBrushless);
+      leftMotor2 = new CANSparkMax(DriveConstants.LEFT_MOTOR_2_ID, MotorType.kBrushless);
+      rightMotor1 = new CANSparkMax(DriveConstants.RIGHT_MOTOR_1_ID, MotorType.kBrushless);
+      rightMotor2 = new CANSparkMax(DriveConstants.RIGHT_MOTOR_2_ID, MotorType.kBrushless);
+
+      leftMotor1.setIdleMode(IdleMode.kBrake);
+      leftMotor2.setIdleMode(IdleMode.kBrake);
+      rightMotor1.setIdleMode(IdleMode.kBrake);
+      rightMotor2.setIdleMode(IdleMode.kBrake);
+
+      leftMotor2.follow(leftMotor1);
+      rightMotor2.follow(rightMotor1);
 
     // TODO 1.1.2: Initialize motors
 
@@ -50,7 +67,8 @@ public class Drivetrain extends SubsystemBase {
     // TODO 3.1.1: Remove all of the tank drive code in this method
 
     // TODO 2.1.3: Update sim if in simulation
-    
+
+    tankDrive(Robot.driver.getLeftTranslation(), Robot.driver.getRightTranslation());
   }
 
   /**
@@ -64,6 +82,8 @@ public class Drivetrain extends SubsystemBase {
     // TODO 1.2.1: Implement tankDrive
 
     // TODO 2.1.2: If in sim, set sim inputs
+    leftMotor1.set(leftPower * 0.25);
+    rightMotor1.set(rightPower * 0.25);
 
   }
 
