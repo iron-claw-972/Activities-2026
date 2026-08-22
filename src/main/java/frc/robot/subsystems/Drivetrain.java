@@ -1,10 +1,14 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.controls.Follower;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkBase.IdleMode;
+import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.constants.DriveConstants;
 
 public class Drivetrain extends SubsystemBase {
   
@@ -27,10 +31,18 @@ public class Drivetrain extends SubsystemBase {
   public Drivetrain() {
 
     // TODO 1.1.2: Initialize motors
-
+    leftMotor1 = new CANSparkMax(DriveConstants.LEFT_MOTOR_1_ID, MotorType.kBrushless);
+    leftMotor2 = new CANSparkMax(DriveConstants.LEFT_MOTOR_2_ID, MotorType.kBrushless);
+    rightMotor1 = new CANSparkMax(DriveConstants.RIGHT_MOTOR_1_ID, MotorType.kBrushless);
+    rightMotor2= new CANSparkMax(DriveConstants.RIGHT_MOTOR_2_ID, MotorType.kBrushless);
     // TODO 1.1.3: Set motors to brake mode
-  
+    rightMotor1.setIdleMode(IdleMode.kBrake);
+    rightMotor2.setIdleMode(IdleMode.kBrake);
+    leftMotor1.setIdleMode(IdleMode.kBrake);
+    leftMotor2.setIdleMode(IdleMode.kBrake);
     // TODO 1.1.4: Make motor2s follow motor1s
+    leftMotor1.follow(leftMotor2);
+    rightMotor1.follow(rightMotor2);
 
     // TODO 1.2.4: Invert motors if necessary
 
