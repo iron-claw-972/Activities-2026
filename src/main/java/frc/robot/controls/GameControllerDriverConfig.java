@@ -1,5 +1,6 @@
 package frc.robot.controls;
 
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.commands.DoNothing;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.Drivetrain;
@@ -13,14 +14,17 @@ import lib.controllers.GameController.Button;
 public class GameControllerDriverConfig extends BaseDriverConfig {
   private final GameController controller = new GameController(Constants.DRIVER_JOY);
 
+  private Drivetrain drive;
+
   public GameControllerDriverConfig(Drivetrain drive) {
     super(drive);
+    this.drive = drive;
   }
 
   @Override
   public void configureControls() {
     // TODO 4.1.1: Change to your auto command
-    controller.get(Button.A).onTrue(new DoNothing());
+    controller.get(Button.A).onTrue(new InstantCommand(() -> drive.tankDrive(1, 1)));
     // TODO 4.1.3: Add Bang-Bang drive command
 
     // TODO 4.1.4: Add subsystem Bang-Bangs
