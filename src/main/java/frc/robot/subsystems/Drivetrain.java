@@ -8,6 +8,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Robot;
 import frc.robot.constants.DriveConstants;
 
 public class Drivetrain extends SubsystemBase {
@@ -56,9 +57,9 @@ public class Drivetrain extends SubsystemBase {
   @Override
   public void periodic(){
     // TODO 2.2.5: Update odometry
-
     // TODO 1.2.2: Call tankDrive()
-
+    Robot.driver.getRightTranslation();
+    Robot.driver.getLeftTranslation();
     // TODO 3.1.1: Remove all of the tank drive code in this method
 
     // TODO 2.1.3: Update sim if in simulation
@@ -74,7 +75,9 @@ public class Drivetrain extends SubsystemBase {
    */
   public void tankDrive(double leftPower, double rightPower) {
     // TODO 1.2.1: Implement tankDrive
-
+    double leftMotor1=leftPower;
+    double rightMotor1=rightPower;
+    tankDrive(leftPower, rightPower);
     // TODO 2.1.2: If in sim, set sim inputs
 
   }
