@@ -82,8 +82,18 @@ public class NewSubsystem extends SubsystemBase {
                 Units.radiansToDegrees(armSim.getAngleRads())
             );
 
-            setMotor(0.005);
+            setMotor(0.5);
         }
+    }
+
+    public Object someMethod() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'someMethod'");
+    }
+
+    public static NewSubsystem getInstance() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getInstance'");
     }
 }
 

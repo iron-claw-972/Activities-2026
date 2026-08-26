@@ -86,7 +86,7 @@ public class Drivetrain extends SubsystemBase {
   // TODO 3.1.1: Remove all of the tank drive code in this method
 
   // TODO 2.1.3: Update sim if in simulation
-  if (!RobotBase.isReal()) {
+  if (RobotBase.isSimulation()) {
       drivetrainSim.update(Constants.LOOP_TIME);}
     }
 
@@ -103,7 +103,7 @@ public class Drivetrain extends SubsystemBase {
     rightMotor1.set(rightPower);
 
     // TODO 2.1.2: If in sim, set sim inputs
-    if (!RobotBase.isReal()) {
+    if (RobotBase.isSimulation()) {
         drivetrainSim.setInputs(
             leftPower * 12.0,
             rightPower * 12.0
