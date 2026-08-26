@@ -5,7 +5,6 @@ import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
-import edu.wpi.first.hal.simulation.SimulatorJNI;
 import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -33,25 +32,26 @@ public class Drivetrain extends SubsystemBase {
 
 
   public Drivetrain() {
-    gyro = new AHRS(SPI.Port.kMXP);
-    driveKinematics = new DifferentialDriveKinematics(DriveConstants.TRACK_WIDTH);
-    poseEstimator = new DifferentialDrivePoseEstimator(driveKinematics, getGyroAngle(), getLeftPosition(), getRightPosition(), new Pose2d());
-
     if (RobotBase.isReal()) {
       leftMotor1 = new CANSparkMax(DriveConstants.LEFT_MOTOR_1_ID, MotorType.kBrushless);
       leftMotor2 = new CANSparkMax(DriveConstants.LEFT_MOTOR_2_ID, MotorType.kBrushless);
       rightMotor1 = new CANSparkMax(DriveConstants.RIGHT_MOTOR_1_ID, MotorType.kBrushless);
       rightMotor2 = new CANSparkMax(DriveConstants.RIGHT_MOTOR_2_ID, MotorType.kBrushless);
-    leftMotor1.setIdleMode(IdleMode.kBrake);
-    leftMotor2.setIdleMode(IdleMode.kBrake);
-    rightMotor1.setIdleMode(IdleMode.kBrake);
-    rightMotor2.setIdleMode(IdleMode.kBrake);
+      leftMotor1.setIdleMode(IdleMode.kBrake);
+      leftMotor2.setIdleMode(IdleMode.kBrake);
+      rightMotor1.setIdleMode(IdleMode.kBrake);
+      rightMotor2.setIdleMode(IdleMode.kBrake);
 
-    leftMotor2.follow(leftMotor1);
-    rightMotor2.follow(rightMotor1);
+      leftMotor2.follow(leftMotor1);
+      rightMotor2.follow(rightMotor1);
     } else {
       driveSim = new DifferentialDrivetrainSim(DriveConstants.DRIVETRAIN_PLANT, DriveConstants.MOTOR, DriveConstants.GEAR_RATIO, DriveConstants.TRACK_WIDTH, DriveConstants.WHEEL_DIAMETER / 2, DriveConstants.MEASUREMENT_STD_DEVS);
     }
+
+    gyro = new AHRS(SPI.Port.kMXP);
+    driveKinematics = new DifferentialDriveKinematics(DriveConstants.TRACK_WIDTH);
+    System.out.println(getGyroAngle());
+    poseEstimator = new DifferentialDrivePoseEstimator(driveKinematics, getGyroAngle(), getLeftPosition(), getRightPosition(), new Pose2d());
   }
 
    /**
@@ -68,6 +68,9 @@ public class Drivetrain extends SubsystemBase {
     }
   }
 
+  @Override
+  public void simulationPeriodic() {}
+
   /**
    * Drives the robot using tank drive controls. Tank drive is slightly easier to code but less
    * intuitive to control than arcade drive.
@@ -80,8 +83,8 @@ public class Drivetrain extends SubsystemBase {
 
     // TODO 2.1.2: If in sim, set sim inputs
     if (RobotBase.isReal()) {
-    leftMotor1.set(leftPower * 0.25);
-    rightMotor1.set(rightPower * 0.25);
+      leftMotor1.set(leftPower * 0.25);
+      rightMotor1.set(rightPower * 0.25);
     } else {
       driveSim.setInputs(leftPower * 0.25 * Constants.ROBOT_VOLTAGE, rightPower * 0.25 * Constants.ROBOT_VOLTAGE);
     }
