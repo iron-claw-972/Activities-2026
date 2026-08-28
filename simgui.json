@@ -9,6 +9,7 @@
       "/Shuffleboard/Scheduler/Command Scheduler": "Scheduler",
       "/Shuffleboard/Scheduler/Scheduler": "Scheduler",
       "/Shuffleboard/Subsystem/TEST MECHANISM": "Mechanism2d",
+      "/Shuffleboard/Subsystem/mech": "Mechanism2d",
       "/SmartDashboard/Command Scheduler": "Scheduler"
     },
     "windows": {
@@ -22,10 +23,18 @@
         "window": {
           "visible": true
         }
+      },
+      "/Shuffleboard/Subsystem/mech": {
+        "window": {
+          "visible": true
+        }
       }
     }
   },
   "NetworkTables Info": {
     "visible": true
+  },
+  "NetworkTables View": {
+    "visible": false
   }
 }
