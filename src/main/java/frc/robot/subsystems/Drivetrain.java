@@ -11,7 +11,9 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Robot;
 import frc.robot.constants.Constants;
 import frc.robot.constants.DriveConstants;
 
@@ -71,24 +73,31 @@ public class Drivetrain extends SubsystemBase {
    * This will be called every 20ms, or 50 times per second
    */
 @Override
- public void periodic(){
-   // TODO 2.2.5: Update odometry
-   poseEstimator.update(
-     getGyroAngle(),
-     getLeftPosition(),
-     getRightPosition()
-     );
-    
+public void periodic(){
+  // TODO 2.2.5: Update odometry
+  poseEstimator.update(
+    getGyroAngle(),
+    getLeftPosition(),
+    getRightPosition()
+    );
+  
 
-  // TODO 1.2.2: Call tankDrive()
-  tankDrive(0.25, 0.25);
 
-  // TODO 3.1.1: Remove all of the tank drive code in this method
+ // TODO 1.2.2: Call tankDrive()
+ tankDrive(0.25, 0.25);
 
-  // TODO 2.1.3: Update sim if in simulation
-  if (RobotBase.isSimulation()) {
-      drivetrainSim.update(Constants.LOOP_TIME);}
-    }
+
+ // TODO 3.1.1: Remove all of the tank drive code in this method
+
+
+ // TODO 2.1.3: Update sim if in simulation
+ if (RobotBase.isSimulation()) {
+     drivetrainSim.update(Constants.LOOP_TIME);}
+   }
+
+
+
+
 
   /**
    * Drives the robot using tank drive controls. Tank drive is slightly easier to code but less
