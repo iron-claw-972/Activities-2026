@@ -127,9 +127,14 @@ public void periodic(){
    * @param turn the commanded turn rotation
    */
   public void arcadeDrive(double throttle, double turn) {
+    double leftPower = throttle + turn;
+    double rightPower = throttle - turn;
+
+    tankDrive(leftPower, rightPower);
+}
     // TODO 3.1.2: Implement arcadeDrive
     
-  }
+  
 
   public Pose2d getPose(){
     // TODO 2.2.6: Implement this method
