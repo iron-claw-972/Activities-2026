@@ -14,7 +14,8 @@ public class SubsystemTab extends ShuffleBoardTabs {
     }
 
     public void createEntries(){
-        tab = Shuffleboard.getTab("Subsystem");
+        tab = Shuffleboard.getTab("Test Subsystem");
+        tab.add("Mechanism 2D", test.mechanism);
 
         // TODO 2.4.7: Add Mechanism2d
 

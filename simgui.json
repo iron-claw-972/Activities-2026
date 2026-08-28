@@ -9,6 +9,7 @@
       "/Shuffleboard/Scheduler/Command Scheduler": "Scheduler",
       "/Shuffleboard/Scheduler/Scheduler": "Scheduler",
       "/Shuffleboard/Subsystem/TEST MECHANISM": "Mechanism2d",
+      "/Shuffleboard/Test Subsystem/Mechanism 2D": "Mechanism2d",
       "/SmartDashboard/Command Scheduler": "Scheduler"
     },
     "windows": {
@@ -19,6 +20,11 @@
         "right": 2961,
         "top": 79,
         "width": 16.541748046875,
+        "window": {
+          "visible": true
+        }
+      },
+      "/Shuffleboard/Test Subsystem/Mechanism 2D": {
         "window": {
           "visible": true
         }
@@ -38,7 +44,8 @@
       "Publishers": {
         "open": true
       }
-    }
+    },
+    "visible": true
   },
   "Plot": {
     "Plot <0>": {

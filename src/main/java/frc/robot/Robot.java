@@ -45,10 +45,10 @@ public class Robot extends TimedRobot {
     drive = new Drivetrain();
     // TODO 2.3.10: Create your subsystem
     
+    test = new Test();
     shuffleboard = new ShuffleBoardManager(drive, test);
     driver = new GameControllerDriverConfig(drive);
     operator = new Operator();
-    test = new Test();
 
     driver.configureControls();
     operator.configureControls();

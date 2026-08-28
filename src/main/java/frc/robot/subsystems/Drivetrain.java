@@ -61,7 +61,7 @@ public class Drivetrain extends SubsystemBase {
   public void periodic(){
     // TODO 3.1.1: Remove all of the tank drive code in this method
 
-    tankDrive(Robot.driver.getLeftTranslation(), Robot.driver.getRightTranslation());
+    tankDrive(Robot.driver.getLeftTranslation(), Robot.driver.getLeftTranslation());
     poseEstimator.update(getGyroAngle(), getLeftPosition(), getRightPosition());
     if (RobotBase.isSimulation()) {
       driveSim.update(Constants.LOOP_TIME);
