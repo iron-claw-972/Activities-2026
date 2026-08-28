@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.commands.ArcadeDriveCommand;
 import frc.robot.controls.BaseDriverConfig;
 import frc.robot.controls.GameControllerDriverConfig;
 import frc.robot.controls.Operator;
@@ -31,6 +32,8 @@ public class Robot extends TimedRobot {
 
   private static boolean isTestMode = false;
 
+  private static ArcadeDriveCommand arcadeDriveCommand;
+
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -52,6 +55,8 @@ public class Robot extends TimedRobot {
 
     driver.configureControls();
     operator.configureControls();
+
+    drive.setDefaultCommand(arcadeDriveCommand);
 
     // TODO 3.1.6: Set the drivetrain's default command
 

@@ -61,15 +61,14 @@ public class Drivetrain extends SubsystemBase {
   public void periodic(){
     // TODO 3.1.1: Remove all of the tank drive code in this method
 
-    tankDrive(Robot.driver.getLeftTranslation(), Robot.driver.getLeftTranslation());
+    // call arcadeDrive()
     poseEstimator.update(getGyroAngle(), getLeftPosition(), getRightPosition());
-    if (RobotBase.isSimulation()) {
-      driveSim.update(Constants.LOOP_TIME);
-    }
   }
 
   @Override
-  public void simulationPeriodic() {}
+  public void simulationPeriodic() {
+    driveSim.update(Constants.LOOP_TIME);
+  }
 
   /**
    * Drives the robot using tank drive controls. Tank drive is slightly easier to code but less
@@ -79,9 +78,6 @@ public class Drivetrain extends SubsystemBase {
    * @param rightPower the commanded power to the right motors (-1 to 1)
    */
   public void tankDrive(double leftPower, double rightPower) {
-    // TODO 1.2.1: Implement tankDrive
-
-    // TODO 2.1.2: If in sim, set sim inputs
     if (RobotBase.isReal()) {
       leftMotor1.set(leftPower * 0.25);
       rightMotor1.set(rightPower * 0.25);
@@ -98,8 +94,7 @@ public class Drivetrain extends SubsystemBase {
    * @param turn the commanded turn rotation
    */
   public void arcadeDrive(double throttle, double turn) {
-    // TODO 3.1.2: Implement arcadeDrive
-    
+    tankDrive(throttle + turn, throttle - turn);
   }
 
   public Pose2d getPose(){
