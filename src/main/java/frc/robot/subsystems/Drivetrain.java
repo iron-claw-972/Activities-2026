@@ -84,7 +84,7 @@ public void periodic(){
 
 
  // TODO 1.2.2: Call tankDrive()
- tankDrive(0.25, 0.25);
+//  tankDrive(0.25, 0.25);
 
 
  // TODO 3.1.1: Remove all of the tank drive code in this method
