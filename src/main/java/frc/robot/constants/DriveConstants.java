@@ -25,10 +25,10 @@ public class DriveConstants {
   public static final double GEAR_RATIO = 62.0/9;
 
   // Diameter of the wheels in meters
-  public static final double WHEEL_DIAMETER = Units.inchesToMeters(4);
+  public static final double WHEEL_DIAMETER = Units.inchesToMeters(inches:4);
 
   // Width of the robot in meters.
-  public static final double TRACK_WIDTH = Units.inchesToMeters(24.405);
+  public static final double TRACK_WIDTH = Units.inchesToMeters(inches:24.405);
 
   // The motor type and amount, used for simulation
   @SuppressWarnings("unused")

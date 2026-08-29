@@ -1,7 +1,6 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -27,31 +26,91 @@ public class Drivetrain extends SubsystemBase {
   public Drivetrain() {
 
     // TODO 1.1.2: Initialize motors
+    leftMotor1 = new CANSparkMax(-1, CANSparkMax.MotorType.kBrushless);
+    leftMotor2 = new CANSparkMax(-1, CANSparkMax.MotorType.kBrushless);
+    rightMotor1 = new CANSparkMax(-1, CANSparkMax.MotorType.kBrushless);
+    rightMotor2 = new CANSparkMax(-1, CANSparkMax.MotorType.kBrushless); 
 
-    // TODO 1.1.3: Set motors to brake mode
-  
     // TODO 1.1.4: Make motor2s follow motor1s
+    leftMotor2.follow(leftMotor1);
+    rightMotor2.follow(rightMotor1);
 
     // TODO 1.2.4: Invert motors if necessary
+    leftMotor1.setInverted(false);
+    rightMotor1.setInverted(true);
+
+    leftMotor1.setNeutralMode();
+    rightMotor1.setNeutralMode();
 
     // TODO 2.1.1: Define DifferentialDrivetrainSim if the robot isn't real
+    if (RobotBase.isSimulation()) {
+      driveSim = new DifferentialDrivetrainSim(
+        DCMotor.getNEO(2)
+        7.29
+        7.5
+        60.0
+        Units.inchesToMeters(3)
+        0.7112
+        VecBuilder.fill(0.001, 0.001, 0.001, 0.1, 0.1, 0.005, 0.005));
+        
+    }
 
   }
+
+    
+  
+  
+
+  public void tankDrive(double leftPower, double rightPower) {
+    leftMotor1.set(leftPower);
+    rightMotor1.set(rightPower);
+  } 
+    
 
    /**
    * This will be called every 20ms, or 50 times per second
    */
   @Override
   public void periodic(){
+    // read the controller and set the powers
+    ControllerInput input = read_Controller();
+    MotorOutputs outputs = calculate_controll_logic(input);
+    set_motor_powers(outputs);
+
+    read_Controller();
+
+    update();
+
+  }
+
+  public void simulatorPeriodic(){
+    simulator.getLeftPositionMeters();
+    simulator.getRightPositionMeters();
+    simulator.update(Constants.LOOP_TIME);
+    (RobotBase.isSimulation());
+  }
     // TODO 2.2.5: Update odometry
+  new AHRS(SPI.Port.kMXP);
+
+  poseEstimator.update(getGyroAngle(), getLeftPosition(), getRightPosition());
+  DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(DriveConstants.TRACK_WIDTH);
+  var wheelSpeeds = new DifferentialDriveWheelSpeeds(getLeftSpeed(), getRightSpeed());
+  ChassisSpeeds chassisSpeeds = kinematics.toChassisSpeeds(wheelSpeeds);
+  double linearVelocity = chasisSpeeds.vxMetersPerSecond;
+  double angularVelocity = chasisSpeeds.omegaRadiansPerSecond;
+
+  DifferentialDrivePoseEstimator = new DifferentialDrivePoseEstimator(kinematics, getGyroAngle(), getLeftPosition(), getRightPosition(), new Pose2d());
+
+
 
     // TODO 1.2.2: Call tankDrive()
+    tankDrive(leftPower, rightPower);
 
     // TODO 3.1.1: Remove all of the tank drive code in this method
 
     // TODO 2.1.3: Update sim if in simulation
     
-  }
+}
 
   /**
    * Drives the robot using tank drive controls. Tank drive is slightly easier to code but less
