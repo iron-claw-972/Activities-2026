@@ -3,6 +3,9 @@
     "types": {
       "/FMSInfo": "FMSInfo",
       "/Shuffleboard/Auto/SendableChooser[0]": "String Chooser",
+      "/Shuffleboard/Auto/Spin 1 Rotation": "Command",
+      "/Shuffleboard/Auto/Spin 2 Rotations": "Command",
+      "/Shuffleboard/Auto/Spin 5 Rotations": "Command",
       "/Shuffleboard/Drive/Characterize": "Command",
       "/Shuffleboard/Drive/Field": "Field2d",
       "/Shuffleboard/Scheduler/Command Scheduler": "Scheduler",
@@ -11,6 +14,11 @@
       "/SmartDashboard/Command Scheduler": "Scheduler"
     },
     "windows": {
+      "/Shuffleboard/Auto/SendableChooser[0]": {
+        "window": {
+          "visible": true
+        }
+      },
       "/Shuffleboard/Drive/Field": {
         "bottom": 1476,
         "height": 8.210550308227539,
@@ -18,6 +26,11 @@
         "right": 2961,
         "top": 79,
         "width": 16.541748046875,
+        "window": {
+          "visible": true
+        }
+      },
+      "/Shuffleboard/Subsystem/Mechanism": {
         "window": {
           "visible": true
         }

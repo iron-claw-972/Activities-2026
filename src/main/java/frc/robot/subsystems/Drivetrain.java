@@ -4,6 +4,7 @@ import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
 
 import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -51,7 +52,8 @@ public class Drivetrain extends SubsystemBase {
 
     // TODO 1.1.4: Make motor2s follow motor1s
     leftMotor2.follow(leftMotor1);
-    rightMotor2.follow(rightMotor1);  
+    rightMotor2.follow(rightMotor1); 
+    gyro = new AHRS(); 
   
     // TODO 1.2.4: Invert motors if necessary
     rightMotor1.setInverted(true);
@@ -142,10 +144,20 @@ public void periodic(){
 
   }
 
-  public void resetEncoders(){
-    // TODO 3.3.7: Reset encoders
+  public void resetEncoders() {
+    leftMotor1.getEncoder().setPosition(0);
+    rightMotor1.getEncoder().setPosition(0);
 
-  }
+    poseEstimator.resetPosition(
+        gyro.getRotation2d(),
+        0,
+        0,
+        poseEstimator.getEstimatedPosition()
+    );
+}
+
+// Returns the average distance traveled by both sides
+
 
   // TODO 2.2.2: Implement these 4 methods
   public double getLeftPosition() {

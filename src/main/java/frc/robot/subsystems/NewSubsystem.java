@@ -12,13 +12,14 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
 
 public class NewSubsystem extends SubsystemBase {
 
     private CANSparkMax motor;
     private SingleJointedArmSim armSim;
-
     private Mechanism2d mechanism;
     private MechanismLigament2d wheel;
 
@@ -82,7 +83,6 @@ public class NewSubsystem extends SubsystemBase {
                 Units.radiansToDegrees(armSim.getAngleRads())
             );
 
-            setMotor(0.5);
         }
     }
 
