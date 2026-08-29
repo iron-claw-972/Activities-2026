@@ -45,43 +45,30 @@ public class Drivetrain extends SubsystemBase {
     // TODO 2.1.1: Define DifferentialDrivetrainSim if the robot isn't real
     if (RobotBase.isSimulation()) {
       driveSim = new DifferentialDrivetrainSim(
-        DCMotor.getNEO(2)
-        7.29
-        7.5
-        60.0
-        Units.inchesToMeters(3)
-        0.7112
-        VecBuilder.fill(0.001, 0.001, 0.001, 0.1, 0.1, 0.005, 0.005));
-        
+        DriveConstants.DRIVETRAIN_PLANT,
+        DriveConstants.MOTOR,
+        DriveConstants.GEAR_RATIO,
+        DriveConstants.TRACK_WIDTH,
+        DriveConstants.WHEEL_DIAMETER / 2.0,
+      );
     }
-
   }
-
-    
-  
-  
 
   public void tankDrive(double leftPower, double rightPower) {
     leftMotor1.set(leftPower);
     rightMotor1.set(rightPower);
   } 
-    
 
    /**
    * This will be called every 20ms, or 50 times per second
    */
   @Override
   public void periodic(){
-    // read the controller and set the powers
-    ControllerInput input = read_Controller();
-    MotorOutputs outputs = calculate_controll_logic(input);
-    set_motor_powers(outputs);
-
-    read_Controller();
-
+    getLeftPosition();
+    getRightPosition();
     update();
-
   }
+}
 
   public void simulatorPeriodic(){
     simulator.getLeftPositionMeters();
@@ -101,16 +88,18 @@ public class Drivetrain extends SubsystemBase {
 
   DifferentialDrivePoseEstimator = new DifferentialDrivePoseEstimator(kinematics, getGyroAngle(), getLeftPosition(), getRightPosition(), new Pose2d());
 
-
-
     // TODO 1.2.2: Call tankDrive()
     tankDrive(leftPower, rightPower);
+
+
+
+
+
+
 
     // TODO 3.1.1: Remove all of the tank drive code in this method
 
     // TODO 2.1.3: Update sim if in simulation
-    
-}
 
   /**
    * Drives the robot using tank drive controls. Tank drive is slightly easier to code but less
