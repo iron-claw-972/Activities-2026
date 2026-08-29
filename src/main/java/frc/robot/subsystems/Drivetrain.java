@@ -5,8 +5,10 @@ import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.SPI;
@@ -17,30 +19,30 @@ import frc.robot.constants.Constants;
 import frc.robot.constants.DriveConstants;
 
 public class Drivetrain extends SubsystemBase {
-  
+
   private CANSparkMax leftMotor1;
   private CANSparkMax leftMotor2;
   private CANSparkMax rightMotor1;
   private CANSparkMax rightMotor2;
 
   // TODO 2.1.1: Create DifferentialDrivetrainSim object (don't define it here)
-DifferentialDrivetrainSim driveSim;
+  DifferentialDrivetrainSim driveSim;
   // TODO 2.2.1: Create gyro (AHRS)
   AHRS gyro = new AHRS(SPI.Port.kMXP);
   // TODO 2.2.3: Create DifferentialDriveKinematics
-
+  DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(DriveConstants.TRACK_WIDTH);
   // TODO 2.2.4: Create DifferentialDrivePoseEstimator
-
+  DifferentialDrivePoseEstimator poseEstimator = new DifferentialDrivePoseEstimator(kinematics, gyro.getRotation2d(), getLeftPosition(), getRightPosition(), new Pose2d());
   // TODO 6.1.5: Create Feedforward and PIDs
 
-
+  
   public Drivetrain() {
 
     // TODO 1.1.2: Initialize motors
-    CANSparkMax leftMotor1 = new CANSparkMax(DriveConstants.LEFT_MOTOR_1_ID, MotorType.kBrushless);    
-    CANSparkMax leftMotor2 = new CANSparkMax(DriveConstants.LEFT_MOTOR_2_ID, MotorType.kBrushless);
-    CANSparkMax rightMotor1 = new CANSparkMax(DriveConstants.RIGHT_MOTOR_1_ID, MotorType.kBrushless);
-    CANSparkMax rightMotor2 = new CANSparkMax(DriveConstants.RIGHT_MOTOR_2_ID,MotorType.kBrushless);
+    leftMotor1 = new CANSparkMax(DriveConstants.LEFT_MOTOR_1_ID, MotorType.kBrushless);
+    leftMotor2 = new CANSparkMax(DriveConstants.LEFT_MOTOR_2_ID, MotorType.kBrushless);
+    rightMotor1 = new CANSparkMax(DriveConstants.RIGHT_MOTOR_1_ID, MotorType.kBrushless);
+    rightMotor2 = new CANSparkMax(DriveConstants.RIGHT_MOTOR_2_ID, MotorType.kBrushless);
 
     // TODO 1.1.3: Set motors to brake mode
     leftMotor1.setIdleMode(IdleMode.kBrake);
@@ -48,107 +50,117 @@ DifferentialDrivetrainSim driveSim;
     rightMotor1.setIdleMode(IdleMode.kBrake);
     rightMotor2.setIdleMode(IdleMode.kBrake);
     // TODO 1.1.4: Make motor2s follow motor1s
-    leftMotor1.follow(leftMotor2);      
+    leftMotor1.follow(leftMotor2);
     rightMotor1.follow(rightMotor2);
-  // TODO 1.2.4: Invert motors if necessary
+    // TODO 1.2.4: Invert motors if necessary
 
-  // TODO 2.1.1: Define DifferentialDrivetrainSim if the robot isn't real
-    if (RobotBase.isSimulation()){
-      driveSim = new DifferentialDrivetrainSim(DriveConstants.MOTOR, DriveConstants.GEAR_RATIO, 4, 20, DriveConstants.WHEEL_DIAMETER/2, DriveConstants.TRACK_WIDTH/2, DriveConstants.MEASUREMENT_STD_DEVS);
+    // TODO 2.1.1: Define DifferentialDrivetrainSim if the robot isn't real
+    if (RobotBase.isSimulation()) {
+      driveSim = new DifferentialDrivetrainSim(DriveConstants.MOTOR, DriveConstants.GEAR_RATIO, 4, 20,
+          DriveConstants.WHEEL_DIAMETER / 2, DriveConstants.TRACK_WIDTH / 2, DriveConstants.MEASUREMENT_STD_DEVS);
 
     }
   }
-   /*
+
+  /*
    * This will be called every 20ms, or 50 times per second
    */
   @Override
-  public void periodic(){
+  public void periodic() {
 
     // TODO 2.2.5: Update odometry
-
+    poseEstimator.update(gyro.getRotation2d(), getLeftPosition(), getRightPosition());
     // TODO 1.2.2: Call tankDrive()
     tankDrive(Robot.driver.getLeftTranslation(), Robot.driver.getRightTranslation());
 
     // TODO 3.1.1: Remove all of the tank drive code in this method
 
     // TODO 2.1.3: Update sim if in simulation
-    if (RobotBase.isSimulation()){
+    if (RobotBase.isSimulation()) {
       driveSim.update(Constants.LOOP_TIME);
     }
   }
 
   @Override
   public void simulationPeriodic() {
-    if (!RobotBase.isReal()){
+    if (!RobotBase.isReal()) {
       driveSim.update(Constants.LOOP_TIME);
     }
 
   }
+  
+
   /**
-   * Drives the robot using tank drive controls. Tank drive is slightly easier to code but less
+   * Drives the robot using tank drive controls. Tank drive is slightly easier to
+   * code but less
    * intuitive to control than arcade drive.
    *
-   * @param leftPower the commanded power to the left motors (-1 to 1)
+   * @param leftPower  the commanded power to the left motors (-1 to 1)
    * @param rightPower the commanded power to the right motors (-1 to 1)
    */
   public void tankDrive(double leftPower, double rightPower) {
     // TODO 1.2.1: Implement tankDrive
-    leftMotor1.set(leftPower*0.25);
-    rightMotor1.set(rightPower*0.25); 
-    if (RobotBase.isSimulation()){
-      driveSim.setInputs(leftPower*0.25*Constants.ROBOT_VOLTAGE, rightPower*0.25*Constants.ROBOT_VOLTAGE);
+    leftMotor1.set(leftPower * 0.25);
+    rightMotor1.set(rightPower * 0.25);
+    if (RobotBase.isSimulation()) {
+      driveSim.setInputs(leftPower * 0.25 * Constants.ROBOT_VOLTAGE, rightPower * 0.25 * Constants.ROBOT_VOLTAGE);
     }
-    // TODO 2.1.2: If in sim, set sim inputs 
+    // TODO 2.1.2: If in sim, set sim inputs
   }
+
   /**
    * Drives the robot using arcade controls.
    *
    * @param forward the commanded forward movement
-   * @param turn the commanded turn rotation
+   * @param turn    the commanded turn rotation
    */
   public void arcadeDrive(double throttle, double turn) {
     // TODO 3.1.2: Implement arcadeDrive
-    
+
   }
 
-  public Pose2d getPose(){
+  public Pose2d getPose() {
     // TODO 2.2.6: Implement this method
-    return new Pose2d();
+    return poseEstimator.getEstimatedPosition();
   }
 
-  public void resetEncoders(){
+  public void resetEncoders() {
     // TODO 3.3.7: Reset encoders
 
   }
 
   // TODO 2.2.2: Implement these 4 methods
-  public double getLeftPosition(){
-    return 0;
-  }
-  public double getRightPosition(){
-    return 0;
-  }
-  public double getAveragePosition(){
-    return 0;
-  }
-  public Rotation2d getGyroAngle(){
-    return null;
+  public double getLeftPosition() {
+    return leftMotor1.getEncoder().getPosition();
   }
 
-  public void tankDriveVolts(double left, double right){
+  public double getRightPosition() {
+    return rightMotor1.getEncoder().getPosition();
+  }
+
+  public double getAveragePosition() {
+    return (getLeftPosition() + getRightPosition()) / 2.0;
+  }
+
+  public Rotation2d getGyroAngle() {
+    return gyro.getRotation2d();
+  }
+
+  public void tankDriveVolts(double left, double right) {
     // TODO 6.1.1: Implement this
 
   }
 
   // TODO 6.2.1: Implement these 2 methods
-  public double getLeftSpeed(){
-    return 0;
-  }
-  public double getRightSpeed(){
+  public double getLeftSpeed() {
     return 0;
   }
 
-  public void feedforwardDrive(double throttle, double turn){
+  public double getRightSpeed() {
+    return 0;
+  }
+
+  public void feedforwardDrive(double throttle, double turn) {
     // TODO 6.2.2: Create wheel speeds
 
     // TODO 6.2.3: Calculate voltages and call tankDriveVolts()
