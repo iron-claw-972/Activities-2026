@@ -32,10 +32,11 @@ public class Drivetrain extends SubsystemBase {
   // TODO 2.2.3: Create DifferentialDriveKinematics
   DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(DriveConstants.TRACK_WIDTH);
   // TODO 2.2.4: Create DifferentialDrivePoseEstimator
-  DifferentialDrivePoseEstimator poseEstimator = new DifferentialDrivePoseEstimator(kinematics, gyro.getRotation2d(), getLeftPosition(), getRightPosition(), new Pose2d());
+  //DifferentialDrivePoseEstimator poseEstimator;
+  DifferentialDrivePoseEstimator poseEstimator;
   // TODO 6.1.5: Create Feedforward and PIDs
 
-  
+
   public Drivetrain() {
 
     // TODO 1.1.2: Initialize motors
@@ -50,8 +51,8 @@ public class Drivetrain extends SubsystemBase {
     rightMotor1.setIdleMode(IdleMode.kBrake);
     rightMotor2.setIdleMode(IdleMode.kBrake);
     // TODO 1.1.4: Make motor2s follow motor1s
-    leftMotor1.follow(leftMotor2);
-    rightMotor1.follow(rightMotor2);
+    leftMotor2.follow(leftMotor1);
+    rightMotor2.follow(rightMotor1);
     // TODO 1.2.4: Invert motors if necessary
 
     // TODO 2.1.1: Define DifferentialDrivetrainSim if the robot isn't real
@@ -60,6 +61,7 @@ public class Drivetrain extends SubsystemBase {
           DriveConstants.WHEEL_DIAMETER / 2, DriveConstants.TRACK_WIDTH / 2, DriveConstants.MEASUREMENT_STD_DEVS);
 
     }
+        poseEstimator = new DifferentialDrivePoseEstimator(kinematics, gyro.getRotation2d(), getLeftPosition(), getRightPosition(), new Pose2d());
   }
 
   /*
@@ -71,7 +73,7 @@ public class Drivetrain extends SubsystemBase {
     // TODO 2.2.5: Update odometry
     poseEstimator.update(gyro.getRotation2d(), getLeftPosition(), getRightPosition());
     // TODO 1.2.2: Call tankDrive()
-    tankDrive(Robot.driver.getLeftTranslation(), Robot.driver.getRightTranslation());
+    tankDrive(Robot.driver.getForwardTranslation(), Robot.driver.getForwardTranslation());
 
     // TODO 3.1.1: Remove all of the tank drive code in this method
 
