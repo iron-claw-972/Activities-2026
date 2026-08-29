@@ -4,6 +4,7 @@ import com.revrobotics.CANSparkMax;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.util.MotorFactory;
 
 public class Drivetrain extends SubsystemBase {
   
@@ -26,11 +27,23 @@ public class Drivetrain extends SubsystemBase {
   public Drivetrain() {
 
     // TODO 1.1.2: Initialize motors
+<<<<<<< HEAD
     leftMotor1 = new CANSparkMax(-1, CANSparkMax.MotorType.kBrushless);
     leftMotor2 = new CANSparkMax(-1, CANSparkMax.MotorType.kBrushless);
     rightMotor1 = new CANSparkMax(-1, CANSparkMax.MotorType.kBrushless);
     rightMotor2 = new CANSparkMax(-1, CANSparkMax.MotorType.kBrushless); 
 
+=======
+    CANSparkMax leftMotor1 = new CANSparkMax(1, "rio");
+    CANSparkMax leftMotor2 = new CANSparkMax(2, "rio");
+    CANSparkMax rightMotor1 = new CANSparkMax(3, "rio");
+    CANSparkMax rightMotor2 = new CANSparkMax(4, "rio");
+    leftMotor2.setControl(new Follower(leftMotor1.getDeviceID(),false));
+    rightMotor1.setControl(new Follower(leftMotor2.getDeviceID(),false));
+    rightMotor2.setControl(new Follower(rightMotor1.getDeviceID(),false));
+    // TODO 1.1.3: Set motors to brake mode
+  
+>>>>>>> ea07babf4000ecb2f35b735d751840405ea07722
     // TODO 1.1.4: Make motor2s follow motor1s
     leftMotor2.follow(leftMotor1);
     rightMotor2.follow(rightMotor1);
