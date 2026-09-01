@@ -76,8 +76,8 @@ public class Drivetrain extends SubsystemBase {
 
   @Override
   public void simulationPeriodic() {
-    driveSim.update(Constants.LOOP_TIME);
     driveSim.setInputs(leftMotor1.get()*12, rightMotor1.get() * 12);
+    driveSim.update(Constants.LOOP_TIME);
     System.out.println(leftMotor1.get());
   }
 
@@ -92,8 +92,6 @@ public class Drivetrain extends SubsystemBase {
     // TODO 1.2.2: Call tankDrive()
 
     tankDrive(Robot.driver.getLeftTranslation(), Robot.driver.getRightTranslation());
-
-    //System.out.println(Robot.driver.getLeftTranslation());
 
     // TODO 3.1.1: Remove all of the tank drive code in this method
 
