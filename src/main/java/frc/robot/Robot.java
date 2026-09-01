@@ -46,8 +46,8 @@ public class Robot extends TimedRobot {
 
     // make subsystems
     drive = new Drivetrain();
-    // TODO 2.3.10: Create your subsystem
     
+    arcadeDriveCommand = new ArcadeDriveCommand(drive);
     test = new Test();
     shuffleboard = new ShuffleBoardManager(drive, test);
     driver = new GameControllerDriverConfig(drive);
@@ -58,7 +58,6 @@ public class Robot extends TimedRobot {
 
     drive.setDefaultCommand(arcadeDriveCommand);
 
-    // TODO 3.1.6: Set the drivetrain's default command
 
     // TODO 4.2.1: Change default command to use RunCommand with a lambda expression
     // TODO 6.3.1: Change to Feedforward command
@@ -78,7 +77,7 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
-    
+
     // Update Shuffleboard
     shuffleboard.update();
   }

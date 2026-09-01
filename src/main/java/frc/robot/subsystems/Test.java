@@ -54,9 +54,8 @@ public class Test extends SubsystemBase {
     public void simulationPeriodic() {
         testMotor.setVoltage(getSpeed() * Constants.ROBOT_VOLTAGE);
         armSim.setInputVoltage(getSpeed() * Constants.ROBOT_VOLTAGE);
-        armSim.update(0.02); // todo: find dt
+        armSim.update(Constants.LOOP_TIME);
         setPosition(Units.radiansToRotations(armSim.getAngleRads()));
         mechanismLigament.setAngle(Units.rotationsToDegrees(getPosition()));
-        System.out.println(getPosition());
     }
 }

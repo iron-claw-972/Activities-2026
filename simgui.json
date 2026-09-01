@@ -1,4 +1,11 @@
 {
+  "HALProvider": {
+    "Other Devices": {
+      "window": {
+        "visible": false
+      }
+    }
+  },
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
@@ -13,6 +20,11 @@
       "/SmartDashboard/Command Scheduler": "Scheduler"
     },
     "windows": {
+      "/Shuffleboard/Auto/SendableChooser[0]": {
+        "window": {
+          "visible": true
+        }
+      },
       "/Shuffleboard/Drive/Field": {
         "bottom": 1476,
         "height": 8.210550308227539,
@@ -47,6 +59,9 @@
     },
     "visible": true
   },
+  "NetworkTables View": {
+    "visible": false
+  },
   "Plot": {
     "Plot <0>": {
       "plots": [
@@ -59,7 +74,10 @@
           ],
           "height": 326
         }
-      ]
+      ],
+      "window": {
+        "visible": false
+      }
     }
   }
 }

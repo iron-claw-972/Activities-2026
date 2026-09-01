@@ -102,8 +102,9 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public void resetEncoders(){
-    // TODO 3.3.7: Reset encoders
-
+    leftMotor1.getEncoder().setPosition(0);
+    rightMotor1.getEncoder().setPosition(0);
+    poseEstimator.resetPosition(getGyroAngle(), 0, getPose());
   }
 
   public double getLeftPosition(){

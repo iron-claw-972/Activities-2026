@@ -43,7 +43,7 @@ public class GameControllerDriverConfig extends BaseDriverConfig {
 
   @Override
   public double getRawTurn() {
-    return controller.get(Axis.RIGHT_X);
+    return controller.get(Axis.LEFT_X);
   }
 
   @Override
