@@ -1,9 +1,19 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.controls.Follower;
+import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkMax;
+
+import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
+import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.constants.Constants;
+import frc.robot.constants.DriveConstants;
 import frc.robot.util.MotorFactory;
 
 public class Drivetrain extends SubsystemBase {
@@ -27,23 +37,15 @@ public class Drivetrain extends SubsystemBase {
   public Drivetrain() {
 
     // TODO 1.1.2: Initialize motors
-<<<<<<< HEAD
-    leftMotor1 = new CANSparkMax(-1, CANSparkMax.MotorType.kBrushless);
-    leftMotor2 = new CANSparkMax(-1, CANSparkMax.MotorType.kBrushless);
-    rightMotor1 = new CANSparkMax(-1, CANSparkMax.MotorType.kBrushless);
-    rightMotor2 = new CANSparkMax(-1, CANSparkMax.MotorType.kBrushless); 
+    leftMotor1 = new CANSparkMax(1, MotorType.kBrushless);
+    leftMotor2 = new CANSparkMax(2, MotorType.kBrushless);
+    rightMotor1 = new CANSparkMax(3, MotorType.kBrushless);
+    rightMotor2 = new CANSparkMax(4, MotorType.kBrushless);
 
-=======
-    CANSparkMax leftMotor1 = new CANSparkMax(1, "rio");
-    CANSparkMax leftMotor2 = new CANSparkMax(2, "rio");
-    CANSparkMax rightMotor1 = new CANSparkMax(3, "rio");
-    CANSparkMax rightMotor2 = new CANSparkMax(4, "rio");
-    leftMotor2.setControl(new Follower(leftMotor1.getDeviceID(),false));
-    rightMotor1.setControl(new Follower(leftMotor2.getDeviceID(),false));
-    rightMotor2.setControl(new Follower(rightMotor1.getDeviceID(),false));
     // TODO 1.1.3: Set motors to brake mode
-  
->>>>>>> ea07babf4000ecb2f35b735d751840405ea07722
+    leftMotor1.setIdleMode(CANSparkMax.IdleMode.kBrake);
+    rightMotor2.setIdleMode(CANSparkMax.IdleMode.kBrake);
+
     // TODO 1.1.4: Make motor2s follow motor1s
     leftMotor2.follow(leftMotor1);
     rightMotor2.follow(rightMotor1);
@@ -52,12 +54,9 @@ public class Drivetrain extends SubsystemBase {
     leftMotor1.setInverted(false);
     rightMotor1.setInverted(true);
 
-    leftMotor1.setNeutralMode();
-    rightMotor1.setNeutralMode();
-
     // TODO 2.1.1: Define DifferentialDrivetrainSim if the robot isn't real
     if (RobotBase.isSimulation()) {
-      driveSim = new DifferentialDrivetrainSim(
+      private DifferentialDrivetrainSim driveSim;
         DriveConstants.DRIVETRAIN_PLANT,
         DriveConstants.MOTOR,
         DriveConstants.GEAR_RATIO,
@@ -76,33 +75,41 @@ public class Drivetrain extends SubsystemBase {
    * This will be called every 20ms, or 50 times per second
    */
   @Override
-  public void periodic(){
-    getLeftPosition();
-    getRightPosition();
-    update();
-  }
-}
-
   public void simulatorPeriodic(){
-    simulator.getLeftPositionMeters();
-    simulator.getRightPositionMeters();
-    simulator.update(Constants.LOOP_TIME);
-    (RobotBase.isSimulation());
+    driveSim.getLeftPositionMeters();
+    driveSim.getRightPositionMeters();
+    driveSim.update(Constants.LOOP_TIME);
   }
-    // TODO 2.2.5: Update odometry
-  new AHRS(SPI.Port.kMXP);
 
-  poseEstimator.update(getGyroAngle(), getLeftPosition(), getRightPosition());
-  DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(DriveConstants.TRACK_WIDTH);
-  var wheelSpeeds = new DifferentialDriveWheelSpeeds(getLeftSpeed(), getRightSpeed());
-  ChassisSpeeds chassisSpeeds = kinematics.toChassisSpeeds(wheelSpeeds);
-  double linearVelocity = chasisSpeeds.vxMetersPerSecond;
-  double angularVelocity = chasisSpeeds.omegaRadiansPerSecond;
+    // TODO 2.2.5: Update odometry
+  private AHRS gyro;
+  gyro = new AHRS(SPI.Por.kMXP);
+  public Rotation2d getGyroAngle() {
+    return Rotation2d.fromDegrees(-gyro.getAngle());
+  }
+
+  private DifferentialDrivePoseEstimator poseEstimator;
+
+  poseEstimator = new DifferentialDrivePoseEstimator(
+    kinematics,
+    getGyroAngle(),
+    getLeftPosition(),
+    getRightPosition(),
+    new Pose2d()
+  );
+
+  DifferentialDriveKinematics kinematics =
+    new DifferentialDriveKinematics(DriveConstants.TRACK_WIDTH);
+
+  ChassisSpeeds
+  double linearVelocity = chassisSpeeds.vxMetersPerSecond;
+  double angularVelocity = chassisSpeeds.omegaRadiansPerSecond;
+
 
   DifferentialDrivePoseEstimator = new DifferentialDrivePoseEstimator(kinematics, getGyroAngle(), getLeftPosition(), getRightPosition(), new Pose2d());
 
     // TODO 1.2.2: Call tankDrive()
-    tankDrive(leftPower, rightPower);
+    void tankDrive(leftPower, rightPower);
 
 
 
@@ -125,6 +132,7 @@ public class Drivetrain extends SubsystemBase {
     // TODO 1.2.1: Implement tankDrive
 
     // TODO 2.1.2: If in sim, set sim inputs
+    
 
   }
 
@@ -162,7 +170,6 @@ public class Drivetrain extends SubsystemBase {
   public Rotation2d getGyroAngle(){
     return null;
   }
-
   public void tankDriveVolts(double left, double right){
     // TODO 6.1.1: Implement this
 
