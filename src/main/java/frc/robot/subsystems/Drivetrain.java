@@ -6,8 +6,11 @@ import com.ctre.phoenix6.controls.Follower;
 import com.revrobotics.CANSparkBase.IdleMode;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.proto.Plant;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Robot;
 import frc.robot.constants.Constants;
 import frc.robot.constants.DriveConstants;
 
@@ -43,30 +46,39 @@ public class Drivetrain extends SubsystemBase {
     // TODO 1.1.3: Set motors to brake mode
 
     leftMotor1.setIdleMode(IdleMode.kBrake);
-    leftMotor2.setIdleMode(IdleMode.kBrake);
+    //leftMotor2.setIdleMode(IdleMode.kBrake);
     rightMotor1.setIdleMode(IdleMode.kBrake);
-    rightMotor2.setIdleMode(IdleMode.kBrake);
+    //rightMotor2.setIdleMode(IdleMode.kBrake);
   
     // TODO 1.1.4: Make motor2s follow motor1s
 
-    leftMotor1.follow(leftMotor2);
-    rightMotor1.follow(rightMotor2);
+    //leftMotor1.follow(leftMotor2);
+    //rightMotor1.follow(rightMotor2);
 
 
     // TODO 1.2.4: Invert motors if necessary
 
+
     // TODO 2.1.1: Define DifferentialDrivetrainSim if the robot isn't real
+
+    if (RobotBase.isSimulation()) {
+      driveSim = new DifferentialDrivetrainSim(DriveConstants.DRIVETRAIN_PLANT,DriveConstants.MOTOR,DriveConstants.GEAR_RATIO,DriveConstants.TRACK_WIDTH,DriveConstants.WHEEL_DIAMETER/2,DriveConstants.MEASUREMENT_STD_DEVS);
 
   }
 
-//2.1.4
+//2.1.4;
+    }
+    
+
+    //2.1.2
+
+    
 
   @Override
   public void simulationPeriodic() {
-    double speed = leftMotor1.get();
-    double voltage = speed * 12;
-    driveSim.setInputs(voltage, voltage);
     driveSim.update(Constants.LOOP_TIME);
+    driveSim.setInputs(leftMotor1.get()*12, rightMotor1.get() * 12);
+    System.out.println(leftMotor1.get());
   }
 
 
@@ -79,7 +91,9 @@ public class Drivetrain extends SubsystemBase {
 
     // TODO 1.2.2: Call tankDrive()
 
-    tankDrive(Robot.driver.getLeftTranslation(), Robot.driver.getLeftTranslation());
+    tankDrive(Robot.driver.getLeftTranslation(), Robot.driver.getRightTranslation());
+
+    //System.out.println(Robot.driver.getLeftTranslation());
 
     // TODO 3.1.1: Remove all of the tank drive code in this method
 
@@ -104,7 +118,7 @@ public class Drivetrain extends SubsystemBase {
     // TODO 2.1.2: If in sim, set sim inputs
     //1/2
 
-    DifferentialDrivetrainSim driveSim = new DifferentialDrivetrainSim(DriveConstants.DRIVETRAIN_PLANT,DriveConstants.MOTOR,DriveConstants.GEAR_RATIO,DriveConstants.TRACK_WIDTH,DriveConstants.WHEEL_DIAMETER/2,DriveConstants.MEASUREMENT_STD_DEVS);
+    
 
   }
 
