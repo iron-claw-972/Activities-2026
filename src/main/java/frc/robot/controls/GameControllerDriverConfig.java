@@ -1,8 +1,12 @@
 package frc.robot.controls;
 
-import frc.robot.commands.DoNothing;
+import frc.robot.commands.AutoDriveCommand;
+import frc.robot.commands.BangBangDrive;
+import frc.robot.commands.BangBangSpin;
+import frc.robot.commands.BangBangSubsystem;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.NewSubsystem;
 import lib.controllers.GameController;
 import lib.controllers.GameController.Axis;
 import lib.controllers.GameController.Button;
@@ -12,23 +16,42 @@ import lib.controllers.GameController.Button;
  */
 public class GameControllerDriverConfig extends BaseDriverConfig {
   private final GameController controller = new GameController(Constants.DRIVER_JOY);
-
-  public GameControllerDriverConfig(Drivetrain drive) {
-    super(drive);
+    private NewSubsystem subsystem;
+  
+    public GameControllerDriverConfig(Drivetrain drive, NewSubsystem subsystem) {
+      super(drive);
+      this.subsystem = subsystem;
   }
 
   @Override
   public void configureControls() {
     // TODO 4.1.1: Change to your auto command
-    controller.get(Button.A).onTrue(new DoNothing());
+    controller.get(Button.A).onTrue(
+        new AutoDriveCommand(getDrivetrain())
+    );
+
     // TODO 4.1.3: Add Bang-Bang drive command
+    controller.get(Button.B).onTrue(
+        new BangBangDrive(getDrivetrain(), 5.0)
+    );
 
     // TODO 4.1.4: Add subsystem Bang-Bangs
+    controller.get(Button.X).onTrue(
+        new BangBangSubsystem(subsystem, 2.0)
+    );
+
+    controller.get(Button.X).onFalse(
+        new BangBangSubsystem(subsystem, 0.0)
+    );
 
     // TODO 4.2.2: Make robot spin while a button is pressed
+    controller.get(Button.Y).whileTrue(
+        new BangBangSpin(getDrivetrain(), 3.0)
+    );
 
     // TODO 4.3.1: Add more triggers
-  }
+}
+  
 
   @Override
   public double getRawLeftTranslation() {
