@@ -64,7 +64,7 @@ public class Drivetrain extends SubsystemBase {
     if (RobotBase.isSimulation()) {
       driveSim = new DifferentialDrivetrainSim(DriveConstants.DRIVETRAIN_PLANT,DriveConstants.MOTOR,DriveConstants.GEAR_RATIO,DriveConstants.TRACK_WIDTH,DriveConstants.WHEEL_DIAMETER/2,DriveConstants.MEASUREMENT_STD_DEVS);
 
-  }
+    }
 
 //2.1.4;
     }
@@ -76,9 +76,10 @@ public class Drivetrain extends SubsystemBase {
 
   @Override
   public void simulationPeriodic() {
-    driveSim.setInputs(leftMotor1.get()*12, rightMotor1.get() * 12);
+    // driveSim.setInputs(leftMotor1.get()*12, rightMotor1.get() * 12);
+    driveSim.setInputs(12,12);
     driveSim.update(Constants.LOOP_TIME);
-    System.out.println(leftMotor1.get());
+    //System.out.println(leftMotor1.get());
   }
 
 
@@ -89,9 +90,11 @@ public class Drivetrain extends SubsystemBase {
   public void periodic(){
     // TODO 2.2.5: Update odometry
 
+
+
     // TODO 1.2.2: Call tankDrive()
 
-    tankDrive(Robot.driver.getLeftTranslation(), Robot.driver.getRightTranslation());
+    tankDrive(Robot.driver.getLeftTranslation(), Robot.driver.getLeftTranslation());
 
     // TODO 3.1.1: Remove all of the tank drive code in this method
 
@@ -115,6 +118,7 @@ public class Drivetrain extends SubsystemBase {
 
     // TODO 2.1.2: If in sim, set sim inputs
     //1/2
+    driveSim.setInputs(12, 12);
 
     
 
