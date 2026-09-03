@@ -7,9 +7,10 @@ public class BangBangDrive extends Command {
     Drivetrain drivetrain;
     double setpoint;
 
-    public BangBangDrive(Drivetrain drivetrainInput, double setpointInput) { // instructions didnt indicate type for "setpoint". Guessed it was a double
+    public BangBangDrive(Drivetrain drivetrainInput, double setpointInput) {
         drivetrain = drivetrainInput;
         setpoint = setpointInput;
+        addRequirements(drivetrain);
     }
 
     @Override
@@ -19,7 +20,11 @@ public class BangBangDrive extends Command {
 
     @Override
     public void execute() {
-        // In an if statement to determine hwich direction to drive and set hte motor output. use getAveragePosition() from Drivetrain
+        if (drivetrain.getAveragePosition() < setpoint) {
+            drivetrain.arcadeDrive(10, 0);
+        } else {
+            drivetrain.arcadeDrive(-10, 0);
+        }
     }
 
     @Override
@@ -29,6 +34,6 @@ public class BangBangDrive extends Command {
 
     @Override
     public boolean isFinished() {
-        return Math.abs(drivetrain.getAveragePosition() - setpoint) < 0.01;
+        return Math.abs(drivetrain.getAveragePosition() - setpoint) < 0.02;
     }
 }

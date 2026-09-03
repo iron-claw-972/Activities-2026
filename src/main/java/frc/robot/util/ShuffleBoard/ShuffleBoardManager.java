@@ -25,7 +25,7 @@ public class ShuffleBoardManager {
     // TODO 2.3.12: Add parameter to constructor
     public ShuffleBoardManager(Drivetrain drive, Test test){
         driveTab = new DriveTab(drive);
-        autoTab = new AutoTab(drive);
+        autoTab = new AutoTab(drive, test);
         subsystemTab = new SubsystemTab(test);
         tabs.add(driveTab);
         tabs.add(autoTab);

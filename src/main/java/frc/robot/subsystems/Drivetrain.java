@@ -50,7 +50,6 @@ public class Drivetrain extends SubsystemBase {
 
     gyro = new AHRS(SPI.Port.kMXP);
     driveKinematics = new DifferentialDriveKinematics(DriveConstants.TRACK_WIDTH);
-    System.out.println(getGyroAngle());
     poseEstimator = new DifferentialDrivePoseEstimator(driveKinematics, getGyroAngle(), getLeftPosition(), getRightPosition(), new Pose2d());
   }
 
@@ -102,9 +101,12 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public void resetEncoders(){
-    leftMotor1.getEncoder().setPosition(0);
-    rightMotor1.getEncoder().setPosition(0);
-    poseEstimator.resetPosition(getGyroAngle(), 0, getPose());
+    if (Robot.isReal()) {
+      leftMotor1.getEncoder().setPosition(0);
+      rightMotor1.getEncoder().setPosition(0);
+    } else {
+      poseEstimator.resetPosition(getGyroAngle(), getLeftPosition(), getRightPosition(), getPose());
+    }
   }
 
   public double getLeftPosition(){

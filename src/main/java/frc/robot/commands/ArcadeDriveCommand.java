@@ -15,6 +15,5 @@ public class ArcadeDriveCommand extends Command {
     @Override
     public void execute() {
         drivetrain.arcadeDrive(Robot.driver.getForwardTranslation(), Robot.driver.getTurn());
-        System.out.println(Robot.driver.getTurn() + ":" + Robot.driver.getForwardTranslation());
     }
 }
