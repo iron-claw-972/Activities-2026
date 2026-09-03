@@ -9,6 +9,7 @@ import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
+import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.SPI;
@@ -40,25 +41,27 @@ public class Drivetrain extends SubsystemBase {
   public Drivetrain() {
 
     // TODO 1.1.2: Initialize motors
-    leftMotor1 = new CANSparkMax(DriveConstants.LEFT_MOTOR_1_ID, MotorType.kBrushless);
-    leftMotor2 = new CANSparkMax(DriveConstants.LEFT_MOTOR_2_ID, MotorType.kBrushless);
+    leftMotor1 = new CANSparkMax(DriveConstants.LEFT_MOTOR_1_ID,  MotorType.kBrushless);
+   // leftMotor2 = new CANSparkMax(DriveConstants.LEFT_MOTOR_2_ID, MotorType.kBrushless);
     rightMotor1 = new CANSparkMax(DriveConstants.RIGHT_MOTOR_1_ID, MotorType.kBrushless);
-    rightMotor2 = new CANSparkMax(DriveConstants.RIGHT_MOTOR_2_ID, MotorType.kBrushless);
+   // rightMotor2 = new CANSparkMax(DriveConstants.RIGHT_MOTOR_2_ID, MotorType.kBrushless);
 
     // TODO 1.1.3: Set motors to brake mode
     leftMotor1.setIdleMode(IdleMode.kBrake);
-    leftMotor2.setIdleMode(IdleMode.kBrake);
+   // leftMotor2.setIdleMode(IdleMode.kBrake);
     rightMotor1.setIdleMode(IdleMode.kBrake);
-    rightMotor2.setIdleMode(IdleMode.kBrake);
+   // rightMotor2.setIdleMode(IdleMode.kBrake);
     // TODO 1.1.4: Make motor2s follow motor1s
-    leftMotor2.follow(leftMotor1);
-    rightMotor2.follow(rightMotor1);
+   // leftMotor2.follow(leftMotor1);
+   // rightMotor2.follow(rightMotor1);
     // TODO 1.2.4: Invert motors if necessary
+    leftMotor1.setInverted(true);
+    rightMotor1.setInverted(true);
 
     // TODO 2.1.1: Define DifferentialDrivetrainSim if the robot isn't real
     if (RobotBase.isSimulation()) {
-      driveSim = new DifferentialDrivetrainSim(DriveConstants.MOTOR, DriveConstants.GEAR_RATIO, 4, 20,
-          DriveConstants.WHEEL_DIAMETER / 2, DriveConstants.TRACK_WIDTH / 2, DriveConstants.MEASUREMENT_STD_DEVS);
+      driveSim = new DifferentialDrivetrainSim(DriveConstants.MOTOR, DriveConstants.GEAR_RATIO, 0.03, 0.01,
+          DriveConstants.WHEEL_DIAMETER / 2, DriveConstants.TRACK_WIDTH / 2, null);
 
     }
         poseEstimator = new DifferentialDrivePoseEstimator(kinematics, gyro.getRotation2d(), getLeftPosition(), getRightPosition(), new Pose2d());
@@ -73,24 +76,21 @@ public class Drivetrain extends SubsystemBase {
     // TODO 2.2.5: Update odometry
     poseEstimator.update(gyro.getRotation2d(), getLeftPosition(), getRightPosition());
     // TODO 1.2.2: Call tankDrive()
-    tankDrive(Robot.driver.getForwardTranslation(), Robot.driver.getForwardTranslation());
+    tankDrive(Robot.driver.getLeftTranslation(), Robot.driver.getRightTranslation());
 
     // TODO 3.1.1: Remove all of the tank drive code in this method
 
-    // TODO 2.1.3: Update sim if in simulation
-    if (RobotBase.isSimulation()) {
-      driveSim.update(Constants.LOOP_TIME);
-    }
   }
 
   @Override
   public void simulationPeriodic() {
-    if (!RobotBase.isReal()) {
-      driveSim.update(Constants.LOOP_TIME);
-    }
+    //Gerry said to check this out for voltage imputs to sim
+    System.out.println("Left Motor Voltage: " + leftMotor1.get()*12 + " Right Motor Voltage: " + rightMotor1.get()*12);
+    driveSim.setInputs(leftMotor1.get()*12, rightMotor1.get()*12);
+    driveSim.update(Constants.LOOP_TIME);
+    
 
-  }
-  
+  }  
 
   /**
    * Drives the robot using tank drive controls. Tank drive is slightly easier to
@@ -102,12 +102,17 @@ public class Drivetrain extends SubsystemBase {
    */
   public void tankDrive(double leftPower, double rightPower) {
     // TODO 1.2.1: Implement tankDrive
-    leftMotor1.set(leftPower * 0.25);
-    rightMotor1.set(rightPower * 0.25);
-    if (RobotBase.isSimulation()) {
-      driveSim.setInputs(leftPower * 0.25 * Constants.ROBOT_VOLTAGE, rightPower * 0.25 * Constants.ROBOT_VOLTAGE);
+    if (RobotBase.isReal()) {
+      
     }
     // TODO 2.1.2: If in sim, set sim inputs
+    else {
+      leftMotor1.set(leftPower * 0.25);
+      rightMotor1.set(rightPower * 0.25);
+
+      driveSim.setInputs(leftPower * 0.25 * Constants.ROBOT_VOLTAGE, rightPower * 0.25 * Constants.ROBOT_VOLTAGE);
+    }
+
   }
 
   /**
@@ -118,7 +123,9 @@ public class Drivetrain extends SubsystemBase {
    */
   public void arcadeDrive(double throttle, double turn) {
     // TODO 3.1.2: Implement arcadeDrive
-
+    double leftOutput = (throttle + turn);
+    double rightOutput = (throttle - turn);
+    tankDrive(leftOutput, rightOutput);
   }
 
   public Pose2d getPose() {

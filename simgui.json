@@ -1,4 +1,13 @@
 {
+  "HALProvider": {
+    "Other Devices": {
+      "SPARK MAX [11]": {
+        "header": {
+          "open": true
+        }
+      }
+    }
+  },
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
@@ -9,6 +18,7 @@
       "/Shuffleboard/Scheduler/Command Scheduler": "Scheduler",
       "/Shuffleboard/Scheduler/Scheduler": "Scheduler",
       "/Shuffleboard/Subsystem/TEST MECHANISM": "Mechanism2d",
+      "/Shuffleboard/Subsystem/thing": "Mechanism2d",
       "/SmartDashboard/Command Scheduler": "Scheduler"
     },
     "windows": {
