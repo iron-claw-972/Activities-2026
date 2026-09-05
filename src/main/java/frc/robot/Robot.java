@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.commands.ArcadeDriveCommand;
 import frc.robot.controls.BaseDriverConfig;
 import frc.robot.controls.GameControllerDriverConfig;
@@ -32,7 +33,7 @@ public class Robot extends TimedRobot {
 
   private static boolean isTestMode = false;
 
-  private static ArcadeDriveCommand arcadeDriveCommand;
+  // private static ArcadeDriveCommand arcadeDriveCommand;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -47,16 +48,16 @@ public class Robot extends TimedRobot {
     // make subsystems
     drive = new Drivetrain();
     
-    arcadeDriveCommand = new ArcadeDriveCommand(drive);
+    // arcadeDriveCommand = new ArcadeDriveCommand(drive);
     test = new Test();
     shuffleboard = new ShuffleBoardManager(drive, test);
-    driver = new GameControllerDriverConfig(drive);
+    driver = new GameControllerDriverConfig(drive, test);
     operator = new Operator();
 
     driver.configureControls();
     operator.configureControls();
 
-    drive.setDefaultCommand(arcadeDriveCommand);
+    drive.setDefaultCommand(new RunCommand(() -> drive.arcadeDrive(driver.getForwardTranslation(), driver.getTurn()), drive));
 
 
     // TODO 4.2.1: Change default command to use RunCommand with a lambda expression

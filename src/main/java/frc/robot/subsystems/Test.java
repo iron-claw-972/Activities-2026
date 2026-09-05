@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
@@ -16,6 +17,7 @@ public class Test extends SubsystemBase {
     SingleJointedArmSim armSim;
     public Mechanism2d mechanism;
     MechanismLigament2d mechanismLigament;
+    PIDController pidController;
 
     public Test() {
         testMotor = new CANSparkMax(0, MotorType.kBrushless);
@@ -24,6 +26,9 @@ public class Test extends SubsystemBase {
         mechanism = new Mechanism2d(100, 100);
         mechanismLigament = new MechanismLigament2d("Test Subsystem Mechanism Ligament 2D", 35, 0);
         mechanism.getRoot("pivot", 50, 50).append(mechanismLigament);
+
+        pidController = new PIDController(0.5, 0, 3);
+        pidController.setTolerance(0.1);
     }
 
     public void setSpeed(double speed) {
@@ -47,7 +52,9 @@ public class Test extends SubsystemBase {
     }
 
     public void periodic() {
-        setSpeed(0.4);
+        // setSpeed();
+        System.out.println(getPosition());
+        setSpeed(pidController.calculate(getPosition()));
     }
 
     @Override
@@ -57,5 +64,18 @@ public class Test extends SubsystemBase {
         armSim.update(Constants.LOOP_TIME);
         setPosition(Units.radiansToRotations(armSim.getAngleRads()));
         mechanismLigament.setAngle(Units.rotationsToDegrees(getPosition()));
+    }
+
+    public void spinTo(double setpoint) {
+        pidController.reset();
+        pidController.setSetpoint(setpoint);
+    }
+
+    public boolean atSetpoint() {
+        return pidController.atSetpoint();
+    }
+    
+    public PIDController getPid() {
+        return pidController;
     }
 }

@@ -1,14 +1,21 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
+
+import org.opencv.core.Mat;
+
 import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
+import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
@@ -27,6 +34,9 @@ public class Drivetrain extends SubsystemBase {
   AHRS gyro;
   DifferentialDriveKinematics driveKinematics;
   DifferentialDrivePoseEstimator poseEstimator;
+  SimpleMotorFeedforward feedforward;
+  PIDController leftController;
+  PIDController rightController;
 
   // TODO 6.1.5: Create Feedforward and PIDs
 
@@ -51,6 +61,10 @@ public class Drivetrain extends SubsystemBase {
     gyro = new AHRS(SPI.Port.kMXP);
     driveKinematics = new DifferentialDriveKinematics(DriveConstants.TRACK_WIDTH);
     poseEstimator = new DifferentialDrivePoseEstimator(driveKinematics, getGyroAngle(), getLeftPosition(), getRightPosition(), new Pose2d());
+
+    feedforward = new SimpleMotorFeedforward(0, 0, 0);
+    leftController = new PIDController(0, 0, 0);
+    rightController = new PIDController(0, 0, 0);
   }
 
    /**
@@ -136,19 +150,21 @@ public class Drivetrain extends SubsystemBase {
 
   public void tankDriveVolts(double left, double right){
     // TODO 6.1.1: Implement this
-
+    leftMotor1.setVoltage(left);
+    rightMotor1.setVoltage(right);
   }
 
   // TODO 6.2.1: Implement these 2 methods
   public double getLeftSpeed(){
-    return 0;
+    return leftMotor1.getEncoder().getVelocity() / DriveConstants.GEAR_RATIO * Math.PI * DriveConstants.WHEEL_DIAMETER;
   }
   public double getRightSpeed(){
-    return 0;
+    return rightMotor1.getEncoder().getPosition() / DriveConstants.GEAR_RATIO * Math.PI * DriveConstants.WHEEL_DIAMETER;
   }
 
   public void feedforwardDrive(double throttle, double turn){
     // TODO 6.2.2: Create wheel speeds
+    DifferentialDriveWheelSpeeds differentialDriveWheelSpeeds = driveKinematics.toWheelSpeeds(new ChassisSpeeds(throttle, 0, -turn));
 
     // TODO 6.2.3: Calculate voltages and call tankDriveVolts()
 

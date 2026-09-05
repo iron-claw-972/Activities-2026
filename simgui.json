@@ -16,7 +16,9 @@
       "/Shuffleboard/Scheduler/Command Scheduler": "Scheduler",
       "/Shuffleboard/Scheduler/Scheduler": "Scheduler",
       "/Shuffleboard/Subsystem/TEST MECHANISM": "Mechanism2d",
+      "/Shuffleboard/Test Subsystem/Idk": "Command",
       "/Shuffleboard/Test Subsystem/Mechanism 2D": "Mechanism2d",
+      "/Shuffleboard/Test Subsystem/PID CONTROLLER": "PIDController",
       "/SmartDashboard/Command Scheduler": "Scheduler"
     },
     "windows": {
@@ -36,7 +38,17 @@
           "visible": true
         }
       },
+      "/Shuffleboard/Test Subsystem/Idk": {
+        "window": {
+          "visible": true
+        }
+      },
       "/Shuffleboard/Test Subsystem/Mechanism 2D": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/Shuffleboard/Test Subsystem/PID CONTROLLER": {
         "window": {
           "visible": true
         }

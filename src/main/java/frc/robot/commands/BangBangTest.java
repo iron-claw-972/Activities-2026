@@ -15,7 +15,6 @@ public class BangBangTest extends Command {
 
     @Override
     public void execute() {
-        System.out.println(test.getPosition() + ":" + setpoint);
         if (test.getPosition() < setpoint) {
             test.setSpeed(40);
         } else {
