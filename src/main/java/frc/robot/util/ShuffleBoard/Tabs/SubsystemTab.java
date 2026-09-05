@@ -1,4 +1,3 @@
-
 package frc.robot.util.ShuffleBoard.Tabs;
 
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -23,12 +22,10 @@ public class SubsystemTab extends ShuffleBoardTabs {
         tab.add("Mechanism", subsystem.getMechanism());
 
         // TODO 3.3.13: Add command buttons
-        tab.add("Command", new InstantCommand(() -> subsystem.someMethod()));
+        tab.add("Command", new InstantCommand(() -> subsystem.spinTo(90)));
 
         // TODO 5.3.1: Add PID
-        tab.add("P", 0.0);
-        tab.add("I", 0.0);
-        tab.add("D", 0.0);
+        tab.add("PID Controller", subsystem.getPID());
 
     }
     public void update(){}

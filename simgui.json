@@ -18,6 +18,7 @@
       "/Shuffleboard/Scheduler/Command Scheduler": "Scheduler",
       "/Shuffleboard/Subsystem/Command": "Command",
       "/Shuffleboard/Subsystem/Mechanism": "Mechanism2d",
+      "/Shuffleboard/Subsystem/PID Controller": "PIDController",
       "/SmartDashboard/Command Scheduler": "Scheduler"
     },
     "windows": {
