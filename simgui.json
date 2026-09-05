@@ -38,7 +38,17 @@
           "visible": true
         }
       },
+      "/Shuffleboard/Subsystem/Command": {
+        "window": {
+          "visible": true
+        }
+      },
       "/Shuffleboard/Subsystem/Mechanism": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/Shuffleboard/Subsystem/PID Controller": {
         "window": {
           "visible": true
         }
