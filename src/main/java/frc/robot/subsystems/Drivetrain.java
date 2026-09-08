@@ -2,8 +2,6 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
 
-import org.opencv.core.Mat;
-
 import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
@@ -42,19 +40,19 @@ public class Drivetrain extends SubsystemBase {
 
 
   public Drivetrain() {
-    if (RobotBase.isReal()) {
-      leftMotor1 = new CANSparkMax(DriveConstants.LEFT_MOTOR_1_ID, MotorType.kBrushless);
-      leftMotor2 = new CANSparkMax(DriveConstants.LEFT_MOTOR_2_ID, MotorType.kBrushless);
-      rightMotor1 = new CANSparkMax(DriveConstants.RIGHT_MOTOR_1_ID, MotorType.kBrushless);
-      rightMotor2 = new CANSparkMax(DriveConstants.RIGHT_MOTOR_2_ID, MotorType.kBrushless);
-      leftMotor1.setIdleMode(IdleMode.kBrake);
-      leftMotor2.setIdleMode(IdleMode.kBrake);
-      rightMotor1.setIdleMode(IdleMode.kBrake);
-      rightMotor2.setIdleMode(IdleMode.kBrake);
+    leftMotor1 = new CANSparkMax(DriveConstants.LEFT_MOTOR_1_ID, MotorType.kBrushless);
+    leftMotor2 = new CANSparkMax(DriveConstants.LEFT_MOTOR_2_ID, MotorType.kBrushless);
+    rightMotor1 = new CANSparkMax(DriveConstants.RIGHT_MOTOR_1_ID, MotorType.kBrushless);
+    rightMotor2 = new CANSparkMax(DriveConstants.RIGHT_MOTOR_2_ID, MotorType.kBrushless);
+    leftMotor1.setIdleMode(IdleMode.kBrake);
+    leftMotor2.setIdleMode(IdleMode.kBrake);
+    rightMotor1.setIdleMode(IdleMode.kBrake);
+    rightMotor2.setIdleMode(IdleMode.kBrake);
 
-      leftMotor2.follow(leftMotor1);
-      rightMotor2.follow(rightMotor1);
-    } else {
+    leftMotor2.follow(leftMotor1);
+    rightMotor2.follow(rightMotor1);
+
+    if (RobotBase.isReal()) {} else {
       driveSim = new DifferentialDrivetrainSim(DriveConstants.DRIVETRAIN_PLANT, DriveConstants.MOTOR, DriveConstants.GEAR_RATIO, DriveConstants.TRACK_WIDTH, DriveConstants.WHEEL_DIAMETER / 2, DriveConstants.MEASUREMENT_STD_DEVS);
     }
 
@@ -62,9 +60,10 @@ public class Drivetrain extends SubsystemBase {
     driveKinematics = new DifferentialDriveKinematics(DriveConstants.TRACK_WIDTH);
     poseEstimator = new DifferentialDrivePoseEstimator(driveKinematics, getGyroAngle(), getLeftPosition(), getRightPosition(), new Pose2d());
 
-    feedforward = new SimpleMotorFeedforward(0, 0, 0);
-    leftController = new PIDController(0, 0, 0);
-    rightController = new PIDController(0, 0, 0);
+    // All these values r temporary, because I can't get access to the robot to properly calculate these.
+    feedforward = new SimpleMotorFeedforward(0, 5, 5);
+    leftController = new PIDController(0.2, 0, 0);
+    rightController = new PIDController(0.2, 0, 0);
   }
 
    /**
@@ -81,6 +80,7 @@ public class Drivetrain extends SubsystemBase {
   @Override
   public void simulationPeriodic() {
     driveSim.update(Constants.LOOP_TIME);
+    driveSim.setInputs(leftMotor1.get() * 0.25 * Constants.ROBOT_VOLTAGE, rightMotor1.get() * 0.25 * Constants.ROBOT_VOLTAGE);
   }
 
   /**
@@ -91,13 +91,8 @@ public class Drivetrain extends SubsystemBase {
    * @param rightPower the commanded power to the right motors (-1 to 1)
    */
   public void tankDrive(double leftPower, double rightPower) {
-    if (RobotBase.isReal()) {
-      leftMotor1.set(leftPower * 0.25);
-      rightMotor1.set(rightPower * 0.25);
-    } else {
-      driveSim.setInputs(leftPower * 0.25 * Constants.ROBOT_VOLTAGE, rightPower * 0.25 * Constants.ROBOT_VOLTAGE);
-    }
-
+    leftMotor1.set(leftPower * 0.25);
+    rightMotor1.set(rightPower * 0.25);
   }
 
   /**
@@ -149,24 +144,22 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public void tankDriveVolts(double left, double right){
-    // TODO 6.1.1: Implement this
-    leftMotor1.setVoltage(left);
-    rightMotor1.setVoltage(right);
+    tankDrive(left / 12.0, right / 12.0);
   }
 
-  // TODO 6.2.1: Implement these 2 methods
   public double getLeftSpeed(){
     return leftMotor1.getEncoder().getVelocity() / DriveConstants.GEAR_RATIO * Math.PI * DriveConstants.WHEEL_DIAMETER;
   }
   public double getRightSpeed(){
-    return rightMotor1.getEncoder().getPosition() / DriveConstants.GEAR_RATIO * Math.PI * DriveConstants.WHEEL_DIAMETER;
+    return rightMotor1.getEncoder().getVelocity() / DriveConstants.GEAR_RATIO * Math.PI * DriveConstants.WHEEL_DIAMETER;
   }
 
   public void feedforwardDrive(double throttle, double turn){
-    // TODO 6.2.2: Create wheel speeds
-    DifferentialDriveWheelSpeeds differentialDriveWheelSpeeds = driveKinematics.toWheelSpeeds(new ChassisSpeeds(throttle, 0, -turn));
-
-    // TODO 6.2.3: Calculate voltages and call tankDriveVolts()
-
+    DifferentialDriveWheelSpeeds wheelSpeeds = driveKinematics.toWheelSpeeds(new ChassisSpeeds(throttle, 0, -turn));
+    double leftMotorOut = feedforward.calculate(wheelSpeeds.leftMetersPerSecond) + leftController.calculate(getLeftSpeed(), wheelSpeeds.leftMetersPerSecond);
+    double rightMotorOut = feedforward.calculate(wheelSpeeds.rightMetersPerSecond) + rightController.calculate(getRightSpeed(), wheelSpeeds.rightMetersPerSecond);
+    System.out.println(leftMotorOut + ":" + rightMotorOut);
+    // tankDrive(leftMotorOut / 12.0, rightMotorOut / 12.0);
+    tankDriveVolts(leftMotorOut, rightMotorOut);
   }
 }

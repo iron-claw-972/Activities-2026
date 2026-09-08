@@ -53,7 +53,6 @@ public class Test extends SubsystemBase {
 
     public void periodic() {
         // setSpeed();
-        System.out.println(getPosition());
         setSpeed(pidController.calculate(getPosition()));
     }
 

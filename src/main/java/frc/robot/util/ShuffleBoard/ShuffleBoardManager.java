@@ -17,7 +17,7 @@ public class ShuffleBoardManager {
 
     private ArrayList<ShuffleBoardTabs> tabs = new ArrayList<>();
     
-    private Field feild;
+    private Field field;
 
     private DriveTab driveTab;
     private AutoTab autoTab;
@@ -36,7 +36,7 @@ public class ShuffleBoardManager {
             tab.createEntries();
         }
         
-        feild = new Field(drive);
+        field = new Field(drive);
 
         // This doesn't need to be stored in its own class
         Shuffleboard.getTab("Scheduler").add("Command Scheduler", CommandScheduler.getInstance());
@@ -47,7 +47,7 @@ public class ShuffleBoardManager {
         for (ShuffleBoardTabs tab : tabs){
             tab.update();
         }
-        feild.updateFeild();
+        field.updateFeild();
     }
 
     public Command getSelectedCommand(){

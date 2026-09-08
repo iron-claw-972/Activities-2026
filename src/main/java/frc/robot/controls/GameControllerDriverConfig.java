@@ -33,10 +33,13 @@ public class GameControllerDriverConfig extends BaseDriverConfig {
     // TODO 4.1.1: Change to your auto command
     // controller.get(Button.A).onTrue(new BangBangDrive(drivetrain, 5));
     controller.get(Button.A).onTrue(new RunCommand(() -> {
-      drivetrain.arcadeDrive(10, 90);
+      drivetrain.tankDrive(50, 50);
     }, drivetrain));
     // controller.get(Button.B).onTrue(new SequentialCommandGroup(new BangBangDrive(drivetrain, 5), new AutoCommand(drivetrain)));
-    controller.get(Button.B).onTrue(new PIDCommand(test, 2));
+    // controller.get(Button.B).onTrue(new PIDCommand(test, 2));
+    controller.get(Button.B).onTrue(new RunCommand(() -> {
+      drivetrain.feedforwardDrive(getForwardTranslation(), getTurn());
+    }, drivetrain));
     // TODO 4.1.3: Add Bang-Bang drive command
 
     // TODO 4.1.4: Add subsystem Bang-Bangs
