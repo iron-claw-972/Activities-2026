@@ -18,10 +18,22 @@
       "/Shuffleboard/Scheduler/Command Scheduler": "Scheduler",
       "/Shuffleboard/Scheduler/Scheduler": "Scheduler",
       "/Shuffleboard/Subsystem/TEST MECHANISM": "Mechanism2d",
-      "/SmartDashboard/Command Scheduler": "Scheduler"
+      "/SmartDashboard/Command Scheduler": "Scheduler",
+      "/SmartDashboard/Justin's Field": "Field2d"
     },
     "windows": {
       "/Shuffleboard/Drive/Field": {
+        "bottom": 1476,
+        "height": 8.210550308227539,
+        "left": 150,
+        "right": 2961,
+        "top": 79,
+        "width": 16.541748046875,
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Justin's Field": {
         "bottom": 1476,
         "height": 8.210550308227539,
         "left": 150,

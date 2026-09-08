@@ -9,6 +9,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.proto.Plant;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.constants.Constants;
@@ -17,13 +19,15 @@ import frc.robot.constants.DriveConstants;
 public class Drivetrain extends SubsystemBase {
   
   private CANSparkMax leftMotor1;
-  private CANSparkMax leftMotor2;
   private CANSparkMax rightMotor1;
-  private CANSparkMax rightMotor2;
 
   // TODO 2.1.1: Create DifferentialDrivetrainSim object (don't define it here)
 
   private DifferentialDrivetrainSim driveSim;
+
+  private Field2d Field;
+
+
 
   // TODO 2.2.1: Create gyro (AHRS)
 
@@ -39,9 +43,10 @@ public class Drivetrain extends SubsystemBase {
     // TODO 1.1.2: Initialize motors
 
     leftMotor1 = new CANSparkMax(DriveConstants.LEFT_MOTOR_1_ID, MotorType.kBrushless);
-    leftMotor2 = new CANSparkMax(DriveConstants.LEFT_MOTOR_2_ID, MotorType.kBrushless);
     rightMotor1 = new CANSparkMax(DriveConstants.RIGHT_MOTOR_1_ID, MotorType.kBrushless);
-    rightMotor2 = new CANSparkMax(DriveConstants.RIGHT_MOTOR_2_ID, MotorType.kBrushless);
+
+    Field = new Field2d();
+    SmartDashboard.putData("Justin's Field", Field);
 
     // TODO 1.1.3: Set motors to brake mode
 
@@ -63,7 +68,6 @@ public class Drivetrain extends SubsystemBase {
 
     if (RobotBase.isSimulation()) {
       driveSim = new DifferentialDrivetrainSim(DriveConstants.DRIVETRAIN_PLANT,DriveConstants.MOTOR,DriveConstants.GEAR_RATIO,DriveConstants.TRACK_WIDTH,DriveConstants.WHEEL_DIAMETER/2,DriveConstants.MEASUREMENT_STD_DEVS);
-
     }
 
 //2.1.4;
@@ -79,6 +83,8 @@ public class Drivetrain extends SubsystemBase {
     // driveSim.setInputs(leftMotor1.get()*12, rightMotor1.get() * 12);
     driveSim.setInputs(12,12);
     driveSim.update(Constants.LOOP_TIME);
+    Field.setRobotPose(driveSim.getPose());
+
     //System.out.println(leftMotor1.get());
   }
 
@@ -94,7 +100,7 @@ public class Drivetrain extends SubsystemBase {
 
     // TODO 1.2.2: Call tankDrive()
 
-    tankDrive(Robot.driver.getLeftTranslation(), Robot.driver.getLeftTranslation());
+    tankDrive(Robot.driver.getRightTranslation(), Robot.driver.getLeftTranslation());
 
     // TODO 3.1.1: Remove all of the tank drive code in this method
 
@@ -119,6 +125,7 @@ public class Drivetrain extends SubsystemBase {
     // TODO 2.1.2: If in sim, set sim inputs
     //1/2
     driveSim.setInputs(12, 12);
+
 
     
 
