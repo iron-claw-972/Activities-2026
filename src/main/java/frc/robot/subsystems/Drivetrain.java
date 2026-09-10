@@ -1,20 +1,18 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix6.controls.Follower;
 import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkMax;
-
+import com.revrobotics.CANSparkLowLevel.MotorType;
+import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
 import frc.robot.constants.DriveConstants;
-import frc.robot.util.MotorFactory;
 
 public class Drivetrain extends SubsystemBase {
   
@@ -24,26 +22,28 @@ public class Drivetrain extends SubsystemBase {
   private CANSparkMax rightMotor2;
 
   // TODO 2.1.1: Create DifferentialDrivetrainSim object (don't define it here)
-
+  private DifferentialDrivetrainSim trainSim;
   // TODO 2.2.1: Create gyro (AHRS)
-
+  private AHRS gyro;
   // TODO 2.2.3: Create DifferentialDriveKinematics
-
+  private DifferentialDriveKinematics kinematics;
   // TODO 2.2.4: Create DifferentialDrivePoseEstimator
-
+  private DifferentialDrivePoseEstimator poseEstimator;
   // TODO 6.1.5: Create Feedforward and PIDs
 
 
   public Drivetrain() {
 
     // TODO 1.1.2: Initialize motors
-    leftMotor1 = new CANSparkMax(1, MotorType.kBrushless);
-    leftMotor2 = new CANSparkMax(2, MotorType.kBrushless);
-    rightMotor1 = new CANSparkMax(3, MotorType.kBrushless);
-    rightMotor2 = new CANSparkMax(4, MotorType.kBrushless);
+    leftMotor1 = new CANSparkMax(DriveConstants.LEFT_MOTOR_1_ID, MotorType.kBrushless);
+    leftMotor2 = new CANSparkMax(DriveConstants.LEFT_MOTOR_2_ID, MotorType.kBrushless);
+    rightMotor1 = new CANSparkMax(DriveConstants.RIGHT_MOTOR_1_ID, MotorType.kBrushless);
+    rightMotor2 = new CANSparkMax(DriveConstants.RIGHT_MOTOR_2_ID, MotorType.kBrushless);
 
     // TODO 1.1.3: Set motors to brake mode
     leftMotor1.setIdleMode(CANSparkMax.IdleMode.kBrake);
+    leftMotor2.setIdleMode(CANSparkMax.IdleMode.kBrake);
+    rightMotor1.setIdleMode(CANSparkMax.IdleMode.kBrake);
     rightMotor2.setIdleMode(CANSparkMax.IdleMode.kBrake);
 
     // TODO 1.1.4: Make motor2s follow motor1s
@@ -56,66 +56,49 @@ public class Drivetrain extends SubsystemBase {
 
     // TODO 2.1.1: Define DifferentialDrivetrainSim if the robot isn't real
     if (RobotBase.isSimulation()) {
-      private DifferentialDrivetrainSim driveSim;
+      trainSim = new DifferentialDrivetrainSim(
         DriveConstants.DRIVETRAIN_PLANT,
         DriveConstants.MOTOR,
         DriveConstants.GEAR_RATIO,
         DriveConstants.TRACK_WIDTH,
-        DriveConstants.WHEEL_DIAMETER / 2.0,
+        DriveConstants.WHEEL_DIAMETER, null
       );
     }
-  }
-
-  public void tankDrive(double leftPower, double rightPower) {
-    leftMotor1.set(leftPower);
-    rightMotor1.set(rightPower);
-  } 
-
-   /**
-   * This will be called every 20ms, or 50 times per second
-   */
-  @Override
-  public void simulatorPeriodic(){
-    driveSim.getLeftPositionMeters();
-    driveSim.getRightPositionMeters();
-    driveSim.update(Constants.LOOP_TIME);
-  }
 
     // TODO 2.2.5: Update odometry
-  private AHRS gyro;
-  gyro = new AHRS(SPI.Por.kMXP);
-  public Rotation2d getGyroAngle() {
-    return Rotation2d.fromDegrees(-gyro.getAngle());
+    gyro = new AHRS(SPI.Port.kMXP);
+
+    kinematics =
+      new DifferentialDriveKinematics(DriveConstants.TRACK_WIDTH);
+
+    poseEstimator = new DifferentialDrivePoseEstimator(
+      kinematics, 
+      getGyroAngle(), 
+      getLeftPosition(), 
+      getRightPosition(), 
+      new Pose2d()
+    );
   }
 
-  private DifferentialDrivePoseEstimator poseEstimator;
+    /**
+    * This will be called every 20ms, or 50 times per second
+    */
+    @Override
+    public void simulationPeriodic(){
+      if (trainSim != null) {
+        trainSim.update(Constants.LOOP_TIME);
+      }
+    }
 
-  poseEstimator = new DifferentialDrivePoseEstimator(
-    kinematics,
-    getGyroAngle(),
-    getLeftPosition(),
-    getRightPosition(),
-    new Pose2d()
-  );
+  public Rotation2d getGyroAngle() {
+      return Rotation2d.fromDegrees(-gyro.getAngle());
+  }
 
-  DifferentialDriveKinematics kinematics =
-    new DifferentialDriveKinematics(DriveConstants.TRACK_WIDTH);
-
-  ChassisSpeeds
-  double linearVelocity = chassisSpeeds.vxMetersPerSecond;
-  double angularVelocity = chassisSpeeds.omegaRadiansPerSecond;
-
-
-  DifferentialDrivePoseEstimator = new DifferentialDrivePoseEstimator(kinematics, getGyroAngle(), getLeftPosition(), getRightPosition(), new Pose2d());
+  public Pose2d getPose() {
+    return poseEstimator.getEstimatedPosition();
+  }
 
     // TODO 1.2.2: Call tankDrive()
-    void tankDrive(leftPower, rightPower);
-
-
-
-
-
-
 
     // TODO 3.1.1: Remove all of the tank drive code in this method
 
@@ -128,12 +111,16 @@ public class Drivetrain extends SubsystemBase {
    * @param leftPower the commanded power to the left motors (-1 to 1)
    * @param rightPower the commanded power to the right motors (-1 to 1)
    */
+
   public void tankDrive(double leftPower, double rightPower) {
     // TODO 1.2.1: Implement tankDrive
+    leftMotor1.set(leftPower);
+    rightMotor1.set(rightPower);
 
     // TODO 2.1.2: If in sim, set sim inputs
-    
-
+    if (RobotBase.isSimulation()) {
+      trainSim.setInputs(leftPower * 12.0, rightPower *12.0);
+    }
   }
 
   /**
@@ -144,19 +131,10 @@ public class Drivetrain extends SubsystemBase {
    */
   public void arcadeDrive(double throttle, double turn) {
     // TODO 3.1.2: Implement arcadeDrive
-    
   }
-
-  public Pose2d getPose(){
-    // TODO 2.2.6: Implement this method
-    return new Pose2d();
-  }
-
   public void resetEncoders(){
     // TODO 3.3.7: Reset encoders
-
   }
-
   // TODO 2.2.2: Implement these 4 methods
   public double getLeftPosition(){
     return 0;
@@ -166,9 +144,6 @@ public class Drivetrain extends SubsystemBase {
   }
   public double getAveragePosition(){
     return 0;
-  }
-  public Rotation2d getGyroAngle(){
-    return null;
   }
   public void tankDriveVolts(double left, double right){
     // TODO 6.1.1: Implement this
