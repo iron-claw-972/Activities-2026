@@ -3,9 +3,11 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import com.ctre.phoenix6.controls.Follower;
+import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkBase.IdleMode;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.proto.Plant;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
@@ -31,8 +33,12 @@ public class Drivetrain extends SubsystemBase {
 
   // TODO 2.2.1: Create gyro (AHRS)
 
+  private AHRS gyro;
+
   // TODO 2.2.3: Create DifferentialDriveKinematics
 
+  DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(DriveConstants.TRACK_WIDTH);
+  
   // TODO 2.2.4: Create DifferentialDrivePoseEstimator
 
   // TODO 6.1.5: Create Feedforward and PIDs
@@ -154,16 +160,16 @@ public class Drivetrain extends SubsystemBase {
 
   // TODO 2.2.2: Implement these 4 methods
   public double getLeftPosition(){
-    return 0;
+    return leftMotor1.getEncoder().getPosition();
   }
   public double getRightPosition(){
-    return 0;
+    return rightMotor1.getEncoder().getPosition();
   }
   public double getAveragePosition(){
-    return 0;
+    return (leftMotor1.getEncoder().getPosition()) + (rightMotor1.getEncoder().getPosition()) / 2.0;
   }
   public Rotation2d getGyroAngle(){
-    return null;
+    return gyro.getRotation2d();
   }
 
   public void tankDriveVolts(double left, double right){
