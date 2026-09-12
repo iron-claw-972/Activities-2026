@@ -98,8 +98,6 @@ public class Drivetrain extends SubsystemBase {
     return poseEstimator.getEstimatedPosition();
   }
 
-    // TODO 1.2.2: Call tankDrive()
-
     // TODO 3.1.1: Remove all of the tank drive code in this method
 
     // TODO 2.1.3: Update sim if in simulation
@@ -112,6 +110,7 @@ public class Drivetrain extends SubsystemBase {
    * @param rightPower the commanded power to the right motors (-1 to 1)
    */
 
+  // TODO 1.2.2: Call tankDrive()
   public void tankDrive(double leftPower, double rightPower) {
     // TODO 1.2.1: Implement tankDrive
     leftMotor1.set(leftPower);
