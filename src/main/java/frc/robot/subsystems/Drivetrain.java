@@ -5,10 +5,14 @@ import com.revrobotics.CANSparkMax;
 import com.ctre.phoenix6.controls.Follower;
 import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkBase.IdleMode;
+
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.proto.Plant;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -40,6 +44,16 @@ public class Drivetrain extends SubsystemBase {
   DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(DriveConstants.TRACK_WIDTH);
   
   // TODO 2.2.4: Create DifferentialDrivePoseEstimator
+
+  private final DifferentialDrivePoseEstimator poseEstimator =
+     new DifferentialDrivePoseEstimator(
+      kinematics,
+      gyro.getRotation2d(),
+      0,
+      0,
+      new Pose2d(),
+      VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5)),
+      VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(30)));
 
   // TODO 6.1.5: Create Feedforward and PIDs
 
@@ -102,7 +116,7 @@ public class Drivetrain extends SubsystemBase {
   public void periodic(){
     // TODO 2.2.5: Update odometry
 
-
+    poseEstimator.update(getGyroAngle(), getLeftPosition(), getRightPosition() );
 
     // TODO 1.2.2: Call tankDrive()
 
@@ -150,7 +164,7 @@ public class Drivetrain extends SubsystemBase {
 
   public Pose2d getPose(){
     // TODO 2.2.6: Implement this method
-    return new Pose2d();
+    return driveSim.getPose();
   }
 
   public void resetEncoders(){
