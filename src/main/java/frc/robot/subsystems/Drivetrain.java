@@ -80,15 +80,15 @@ public class Drivetrain extends SubsystemBase {
     );
   }
 
-    /**
-    * This will be called every 20ms, or 50 times per second
-    */
-    @Override
-    public void simulationPeriodic(){
-      if (trainSim != null) {
-        trainSim.update(Constants.LOOP_TIME);
-      }
+  /**
+  * This will be called every 20ms, or 50 times per second
+  */
+  @Override
+  public void simulationPeriodic(){
+    if (trainSim != null) {
+      trainSim.update(Constants.LOOP_TIME);
     }
+  }
 
   public Rotation2d getGyroAngle() {
       return Rotation2d.fromDegrees(-gyro.getAngle());
@@ -129,7 +129,12 @@ public class Drivetrain extends SubsystemBase {
    * @param turn the commanded turn rotation
    */
   public void arcadeDrive(double throttle, double turn) {
-    // TODO 3.1.2: Implement arcadeDrive
+    // TODO 3.1.2: Implement arcadeDrive 
+    Implement arcadeDrive().
+Left output = throttle + turn
+Right output = throttle - turn
+Call tankDrive() rather than duplicating its logic.
+
   }
   public void resetEncoders(){
     // TODO 3.3.7: Reset encoders
@@ -146,7 +151,6 @@ public class Drivetrain extends SubsystemBase {
   }
   public void tankDriveVolts(double left, double right){
     // TODO 6.1.1: Implement this
-
   }
 
   // TODO 6.2.1: Implement these 2 methods
