@@ -14,6 +14,7 @@ import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.proto.Plant;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -37,7 +38,8 @@ public class Drivetrain extends SubsystemBase {
 
   // TODO 2.2.1: Create gyro (AHRS)
 
-  private AHRS gyro;
+  private AHRS gyro = new AHRS(SPI.Port.kMXP);
+  
 
   // TODO 2.2.3: Create DifferentialDriveKinematics
 
@@ -100,8 +102,8 @@ public class Drivetrain extends SubsystemBase {
 
   @Override
   public void simulationPeriodic() {
-    // driveSim.setInputs(leftMotor1.get()*12, rightMotor1.get() * 12);
-    driveSim.setInputs(12,12);
+    driveSim.setInputs(leftMotor1.get()*12, rightMotor1.get() * 12);
+    // driveSim.setInputs(12,12);
     driveSim.update(Constants.LOOP_TIME);
     Field.setRobotPose(driveSim.getPose());
 
@@ -120,7 +122,7 @@ public class Drivetrain extends SubsystemBase {
 
     // TODO 1.2.2: Call tankDrive()
 
-    tankDrive(Robot.driver.getRightTranslation(), Robot.driver.getLeftTranslation());
+    tankDrive(Robot.driver.getRawRightTranslation(), Robot.driver.getLeftTranslation());
 
     // TODO 3.1.1: Remove all of the tank drive code in this method
 

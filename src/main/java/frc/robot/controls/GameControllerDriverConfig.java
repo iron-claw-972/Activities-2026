@@ -38,7 +38,7 @@ public class GameControllerDriverConfig extends BaseDriverConfig {
   @Override
   public double getRawRightTranslation() {
     // - because down is positive
-    return -controller.get(Axis.RIGHT_Y);
+    return -controller.get(Axis.RIGHT_TRIGGER);
   }
 
   @Override
