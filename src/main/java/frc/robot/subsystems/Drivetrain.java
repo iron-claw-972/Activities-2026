@@ -115,13 +115,11 @@ public class Drivetrain extends SubsystemBase {
     // TODO 1.2.1: Implement tankDrive
     leftMotor1.set(leftPower);
     rightMotor1.set(rightPower);
-
     // TODO 2.1.2: If in sim, set sim inputs
     if (RobotBase.isSimulation()) {
       trainSim.setInputs(leftPower * 12.0, rightPower *12.0);
     }
   }
-
   /**
    * Drives the robot using arcade controls.
    *
@@ -130,11 +128,9 @@ public class Drivetrain extends SubsystemBase {
    */
   public void arcadeDrive(double throttle, double turn) {
     // TODO 3.1.2: Implement arcadeDrive 
-    Implement arcadeDrive().
-Left output = throttle + turn
-Right output = throttle - turn
-Call tankDrive() rather than duplicating its logic.
-
+    left.motorOutput = throttle + turn
+    rightMotor1.turnThrottle;
+    tankDrive(throttle, turn);
   }
   public void resetEncoders(){
     // TODO 3.3.7: Reset encoders
