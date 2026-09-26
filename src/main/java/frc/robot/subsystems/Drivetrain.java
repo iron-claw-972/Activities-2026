@@ -122,7 +122,7 @@ public class Drivetrain extends SubsystemBase {
 
     // TODO 1.2.2: Call tankDrive()
 
-    tankDrive(Robot.driver.getRawRightTranslation(), Robot.driver.getLeftTranslation());
+    //tankDrive(Robot.driver.getRawRightTranslation(), Robot.driver.getLeftTranslation());
 
     // TODO 3.1.1: Remove all of the tank drive code in this method
 
@@ -146,7 +146,7 @@ public class Drivetrain extends SubsystemBase {
 
     // TODO 2.1.2: If in sim, set sim inputs
     //1/2
-    driveSim.setInputs(12, 12);
+    //driveSim.setInputs(12, 12);
 
 
     
@@ -161,6 +161,9 @@ public class Drivetrain extends SubsystemBase {
    */
   public void arcadeDrive(double throttle, double turn) {
     // TODO 3.1.2: Implement arcadeDrive
+
+    leftMotor1.set(throttle + turn);
+    rightMotor1.set(throttle - turn);
     
   }
 
