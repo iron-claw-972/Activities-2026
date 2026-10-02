@@ -5,16 +5,16 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.subsystems.Drivetrain;
 
-public class ArcadeDriveCommand extends Command {
+public class FeedForward extends Command {
     Drivetrain drive;
-
-    public ArcadeDriveCommand(Drivetrain drive){
+    
+    public FeedForward(Drivetrain drive){
         this.drive = drive;
         addRequirements(drive);
     }
     @Override
     public void execute(){
-        //drive.arcadeDrive(Robot.driver.getForwardTranslation(), Robot.driver.getTurn());
+        drive.feedforwardDrive(Robot.driver.getForwardTranslation(), Robot.driver.getTurn());
     }
 
     

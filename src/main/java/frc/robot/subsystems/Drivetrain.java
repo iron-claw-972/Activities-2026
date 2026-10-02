@@ -1,30 +1,45 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
+
+import java.time.Instant;
+
 import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import edu.wpi.first.hal.SimDeviceJNI;
+import edu.wpi.first.hal.SimDouble;
+import edu.wpi.first.hal.simulation.SimDeviceDataJNI;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
+import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.units.Velocity;
 import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.constants.Constants;
+
 import frc.robot.constants.DriveConstants;
 
 public class Drivetrain extends SubsystemBase {
 
   private CANSparkMax leftMotor1;
-  private CANSparkMax leftMotor2;
+
   private CANSparkMax rightMotor1;
-  private CANSparkMax rightMotor2;
 
   // TODO 2.1.1: Create DifferentialDrivetrainSim object (don't define it here)
   DifferentialDrivetrainSim driveSim;
@@ -36,6 +51,13 @@ public class Drivetrain extends SubsystemBase {
   //DifferentialDrivePoseEstimator poseEstimator;
   DifferentialDrivePoseEstimator poseEstimator;
   // TODO 6.1.5: Create Feedforward and PIDs
+  SimpleMotorFeedforward feed = new SimpleMotorFeedforward(DriveConstants.S, DriveConstants.V, DriveConstants.A);
+  PIDController pidLeft = new PIDController(DriveConstants.P,DriveConstants.I, DriveConstants.D);
+   PIDController pidRight = new PIDController(DriveConstants.P,DriveConstants.I, DriveConstants.D);
+
+  Field2d field = new Field2d();
+  
+  SimDouble yawSim;
 
 
   public Drivetrain() {
@@ -58,15 +80,27 @@ public class Drivetrain extends SubsystemBase {
     leftMotor1.setInverted(true);
     rightMotor1.setInverted(true);
 
+    SmartDashboard.putData("Davids Field", field);
+    SmartDashboard.putData("Drivetrain Pose Reset", new InstantCommand(() -> resetEncoder(), this));
+
     // TODO 2.1.1: Define DifferentialDrivetrainSim if the robot isn't real
     if (RobotBase.isSimulation()) {
       driveSim = new DifferentialDrivetrainSim(DriveConstants.MOTOR, DriveConstants.GEAR_RATIO, 0.03, 0.01,
           DriveConstants.WHEEL_DIAMETER / 2, DriveConstants.TRACK_WIDTH / 2, null);
 
-    }
-        poseEstimator = new DifferentialDrivePoseEstimator(kinematics, gyro.getRotation2d(), getLeftPosition(), getRightPosition(), new Pose2d());
-  }
+      int dev = SimDeviceDataJNI.getSimDeviceHandle("navX-Sensor[0]");
+      yawSim = new SimDouble(SimDeviceDataJNI.getSimValueHandle(dev, "Yaw")); 
 
+    }
+        poseEstimator = new DifferentialDrivePoseEstimator(kinematics, gyro.getRotation2d(), getLeftPosition(), getRightPosition(), new Pose2d(0, 0 , new Rotation2d()));
+  }
+  public void resetEncoder(){
+    leftMotor1.getEncoder().setPosition(0);
+    rightMotor1.getEncoder().setPosition(0);
+    gyro.reset();
+    poseEstimator.resetPosition(gyro.getRotation2d(), getLeftPosition(), getRightPosition(), new Pose2d());
+    driveSim.setPose(new Pose2d());
+  }
   /*
    * This will be called every 20ms, or 50 times per second
    */
@@ -74,22 +108,27 @@ public class Drivetrain extends SubsystemBase {
   public void periodic() {
 
     // TODO 2.2.5: Update odometry
-    poseEstimator.update(gyro.getRotation2d(), getLeftPosition(), getRightPosition());
+    poseEstimator.update(gyro.getRotation2d(), getLeftPosition()*DriveConstants.WHEEL_CIRCUMFERENCE, getRightPosition()*DriveConstants.WHEEL_CIRCUMFERENCE);
     // TODO 1.2.2: Call tankDrive()
-    tankDrive(Robot.driver.getLeftTranslation(), Robot.driver.getRightTranslation());
+    //tankDrive(Robot.driver.getLeftTranslation(), Robot.driver.getRightTranslation());
+    field.setRobotPose(poseEstimator.getEstimatedPosition());
 
     // TODO 3.1.1: Remove all of the tank drive code in this method
+    SmartDashboard.putString("Robot Pose", poseEstimator.getEstimatedPosition().toString());
 
   }
 
   @Override
   public void simulationPeriodic() {
     //Gerry said to check this out for voltage imputs to sim
-    System.out.println("Left Motor Voltage: " + leftMotor1.get()*12 + " Right Motor Voltage: " + rightMotor1.get()*12);
+    //System.out.println("Left Motor Voltage: " + leftMotor1.get()*12 + " Right Motor Voltage: " + rightMotor1.get()*12);
     driveSim.setInputs(leftMotor1.get()*12, rightMotor1.get()*12);
     driveSim.update(Constants.LOOP_TIME);
-    
 
+    setLeftPosition(driveSim.getLeftPositionMeters()/DriveConstants.WHEEL_CIRCUMFERENCE);
+    setRightPosition(driveSim.getRightPositionMeters()/DriveConstants.WHEEL_CIRCUMFERENCE);
+    
+    setGyroAngle(driveSim.getHeading());
   }  
 
   /**
@@ -139,6 +178,15 @@ public class Drivetrain extends SubsystemBase {
   }
 
   // TODO 2.2.2: Implement these 4 methods
+  public void setLeftPosition(double position) {
+    leftMotor1.getEncoder().setPosition(position);
+  }
+
+  public void setRightPosition(double position) {
+    rightMotor1.getEncoder().setPosition(position);
+  }
+
+
   public double getLeftPosition() {
     return leftMotor1.getEncoder().getPosition();
   }
@@ -157,22 +205,39 @@ public class Drivetrain extends SubsystemBase {
 
   public void tankDriveVolts(double left, double right) {
     // TODO 6.1.1: Implement this
-
+    leftMotor1.setVoltage(left);
+    rightMotor1.setVoltage(right);
   }
 
   // TODO 6.2.1: Implement these 2 methods
   public double getLeftSpeed() {
-    return 0;
+    return leftMotor1.get();
+    //get velocity and return meters per seconed
   }
 
   public double getRightSpeed() {
-    return 0;
+    return rightMotor1.get();
   }
 
   public void feedforwardDrive(double throttle, double turn) {
     // TODO 6.2.2: Create wheel speeds
-
+    var speed = new ChassisSpeeds(throttle, 0 , -turn);
+    DifferentialDriveWheelSpeeds wheelSpeeds = kinematics.toWheelSpeeds(speed);
     // TODO 6.2.3: Calculate voltages and call tankDriveVolts()
+    double leftVelocity = wheelSpeeds.leftMetersPerSecond;
+    double leftVoltage = feed.calculate(leftVelocity) + pidLeft.calculate(getLeftSpeed(), leftVelocity);
+    double rightVelocity = wheelSpeeds.rightMetersPerSecond;
+    double rightVoltage = feed.calculate(rightVelocity) + pidRight.calculate(getRightSpeed(), rightVelocity);
+    tankDriveVolts(leftVoltage, rightVoltage);
+  }
+  public void setGyroAngle(Rotation2d angle) {
+    // TODO 3.3.6: Implement this method
+    
+    yawSim.set(angle.getDegrees());
+  }
 
+  public void resetRobotPose() {
+    // TODO 3.3.5: Implement this method
+    poseEstimator.resetPosition(getGyroAngle(), getLeftPosition(), getRightPosition(), new Pose2d());
   }
 }

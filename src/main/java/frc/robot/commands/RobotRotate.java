@@ -18,12 +18,12 @@ public class RobotRotate extends Command{
     }
     @Override
     public void initialize() {
-        drive.arcadeDrive(0, 0.5);
         startAngle = drive.getGyroAngle();
     }
     @Override
     public void execute() {
-
+        drive.arcadeDrive(0, 0.5);
+        //System.out.println(drive.getGyroAngle().getDegrees());
     }
 
     @Override

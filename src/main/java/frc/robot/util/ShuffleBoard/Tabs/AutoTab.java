@@ -7,6 +7,8 @@ import edu.wpi.first.wpilibj2.command.PrintCommand;
 import frc.robot.commands.RobotRotate;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.util.ShuffleBoard.ShuffleBoardTabs;
+import frc.robot.commands.BangBangDrive;
+import frc.robot.commands.BangBang2;
 
 public class AutoTab extends ShuffleBoardTabs {
 
@@ -27,9 +29,9 @@ public class AutoTab extends ShuffleBoardTabs {
         // TODO 3.2.7: Add your auto command here
          autoCommand.addOption("David's Auto", new RobotRotate(drive)); 
         // TODO 3.3.8: Add your Bang-Bang drive command here
-
+        autoCommand.addOption("BangBang Command", new BangBangDrive(drive, 10));
         // TODO 3.3.11: Add your Bang-Bang command for your subsystem here
-        
+        autoCommand.addOption("BangBang2 Command", new BangBang2(drive, 30));
         tab.add(autoCommand);
     }
 

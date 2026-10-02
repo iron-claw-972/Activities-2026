@@ -27,6 +27,7 @@ public class DriveConstants {
 
   // Diameter of the wheels in meters
   public static final double WHEEL_DIAMETER = Units.inchesToMeters(4);
+  public static final double WHEEL_CIRCUMFERENCE = WHEEL_DIAMETER * Math.PI;
 
   // Width of the robot in meters.
   public static final double TRACK_WIDTH = Units.inchesToMeters(24.405);
@@ -51,7 +52,7 @@ public class DriveConstants {
   public static final double S = 0; // Friction is very difficult to calculate, since it ideally is negligible
   public static final double V = 2*GEAR_RATIO/WHEEL_DIAMETER/MOTOR.KvRadPerSecPerVolt;
   public static final double A = 1/(GEAR_RATIO/WHEEL_DIAMETER/5*MOTOR.KtNMPerAmp/MOTOR.rOhms);
-  public static final double P = 2; // This value is a guess; tune if it doesn't work
+  public static final double P = 0.1; // This value is a guess; tune if it doesn't work
   public static final double I = 0; // Do not add this for velocity control
-  public static final double D = 0; // This shouldn't be needed for velocity control, but might be good to add if it oscillates
+  public static final double D = 0.5; // This shouldn't be needed for velocity control, but might be good to add if it oscillates
 }

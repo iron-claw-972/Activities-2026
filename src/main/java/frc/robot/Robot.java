@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.commands.ArcadeDriveCommand;
 import frc.robot.controls.BaseDriverConfig;
 import frc.robot.controls.GameControllerDriverConfig;
@@ -45,20 +46,22 @@ public class Robot extends TimedRobot {
 
     // make subsystems
     drive = new Drivetrain();
+    subsystem = new MyNewSubsystem();
     // TODO 2.3.10: Create your subsystem
     
-    driver = new GameControllerDriverConfig(drive);
+    driver = new GameControllerDriverConfig(drive, subsystem);
     operator = new Operator();
-    subsystem = new MyNewSubsystem();
 
     shuffleboard = new ShuffleBoardManager(drive, subsystem);
     driver.configureControls();
     operator.configureControls();
 
     // TODO 3.1.6: Set the drivetrain's default command
-    drive.setDefaultCommand(new ArcadeDriveCommand(drive));
+    //drive.setDefaultCommand(new ArcadeDriveCommand(drive));
     // TODO 4.2.1: Change default command to use RunCommand with a lambda expression
+    //drive.setDefaultCommand(new RunCommand(() -> drive.arcadeDrive(Robot.driver.getForwardTranslation(), Robot.driver.getTurn()), drive));
     // TODO 6.3.1: Change to Feedforward command
+    drive.setDefaultCommand(new RunCommand(() -> drive.feedforwardDrive(Robot.driver.getForwardTranslation(), Robot.driver.getTurn()), drive));
   }
 
   /**
