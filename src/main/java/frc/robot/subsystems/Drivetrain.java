@@ -174,18 +174,25 @@ public class Drivetrain extends SubsystemBase {
 
   public void resetEncoders(){
     // TODO 3.3.7: Reset encoders
-
+    leftMotor1.getEncoder().setPosition(0);
+    rightMotor1.getEncoder().setPosition(0);
   }
 
   // TODO 2.2.2: Implement these 4 methods
   public double getLeftPosition(){
+    if (RobotBase.isSimulation()) {
+      return driveSim.getLeftPositionMeters() / (DriveConstants.WHEEL_DIAMETER * Math.PI);
+    }
     return leftMotor1.getEncoder().getPosition();
   }
   public double getRightPosition(){
+    if (RobotBase.isSimulation()) {
+      return driveSim.getRightPositionMeters() / (DriveConstants.WHEEL_DIAMETER * Math.PI);
+    }
     return rightMotor1.getEncoder().getPosition();
   }
   public double getAveragePosition(){
-    return (leftMotor1.getEncoder().getPosition()) + (rightMotor1.getEncoder().getPosition()) / 2.0;
+    return (getLeftPosition()) + (getRightPosition()) / 2.0;
   }
   public Rotation2d getGyroAngle(){
     return gyro.getRotation2d();

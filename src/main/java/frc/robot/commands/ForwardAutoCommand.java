@@ -32,13 +32,13 @@ public class ForwardAutoCommand extends Command{
 
     @Override
     public boolean isFinished(){
-        return false;
+        return drive.getAveragePosition() > 15.0;
     }
 
     //3.2.6
 
     @Override
     public void end(boolean interrupted){
-        
+        drive.tankDrive(0, 0);
     }
 }

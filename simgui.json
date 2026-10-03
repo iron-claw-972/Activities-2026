@@ -23,6 +23,11 @@
       "/SmartDashboard/Justin's Motor": "Mechanism2d"
     },
     "windows": {
+      "/Shuffleboard/Auto/SendableChooser[0]": {
+        "window": {
+          "visible": true
+        }
+      },
       "/Shuffleboard/Drive/Field": {
         "bottom": 1476,
         "height": 8.210550308227539,
