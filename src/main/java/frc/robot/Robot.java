@@ -61,7 +61,7 @@ public class Robot extends TimedRobot {
     // TODO 4.2.1: Change default command to use RunCommand with a lambda expression
     //drive.setDefaultCommand(new RunCommand(() -> drive.arcadeDrive(Robot.driver.getForwardTranslation(), Robot.driver.getTurn()), drive));
     // TODO 6.3.1: Change to Feedforward command
-    drive.setDefaultCommand(new RunCommand(() -> drive.feedforwardDrive(Robot.driver.getForwardTranslation(), Robot.driver.getTurn()), drive));
+    drive.setDefaultCommand(new RunCommand(() -> drive.feedforwardDrive(Robot.driver.getTurn(), Robot.driver.getForwardTranslation()), drive));
   }
 
   /**
