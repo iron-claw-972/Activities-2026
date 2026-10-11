@@ -1,10 +1,19 @@
 package frc.robot.subsystems;
 
+import com.revrobotics.CANSparkBase.IdleMode;
+import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 
+import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Robot;
+import frc.robot.constants.Constants;
+import frc.robot.constants.DriveConstants;
 
 public class Drivetrain extends SubsystemBase {
   
@@ -14,9 +23,9 @@ public class Drivetrain extends SubsystemBase {
   private CANSparkMax rightMotor2;
 
   // TODO 2.1.1: Create DifferentialDrivetrainSim object (don't define it here)
-
+  DifferentialDrivetrainSim driveTrainSim;
   // TODO 2.2.1: Create gyro (AHRS)
-
+ 
   // TODO 2.2.3: Create DifferentialDriveKinematics
 
   // TODO 2.2.4: Create DifferentialDrivePoseEstimator
@@ -27,15 +36,22 @@ public class Drivetrain extends SubsystemBase {
   public Drivetrain() {
 
     // TODO 1.1.2: Initialize motors
-
+    leftMotor1 = new CANSparkMax(1, MotorType.kBrushless);
+    leftMotor2 = new CANSparkMax(2, MotorType.kBrushless);
+    rightMotor1 = new CANSparkMax(3, MotorType.kBrushless);
+    rightMotor2 = new CANSparkMax(4, MotorType.kBrushless);
     // TODO 1.1.3: Set motors to brake mode
-  
+    leftMotor1.setIdleMode(IdleMode.kBrake);
+    rightMotor1.setIdleMode(IdleMode.kBrake);
     // TODO 1.1.4: Make motor2s follow motor1s
-
+    leftMotor2.follow(leftMotor1);
+    rightMotor2.follow(rightMotor1);
     // TODO 1.2.4: Invert motors if necessary
 
     // TODO 2.1.1: Define DifferentialDrivetrainSim if the robot isn't real
-
+    if (RobotBase.isSimulation()) {
+      driveTrainSim = new DifferentialDrivetrainSim(DriveConstants.MOTOR, DriveConstants.GEAR_RATIO, 0.03, 0.01, DriveConstants.WHEEL_DIAMETER / 2, DriveConstants.TRACK_WIDTH / 2, null);
+    }
   }
 
    /**
@@ -46,12 +62,21 @@ public class Drivetrain extends SubsystemBase {
     // TODO 2.2.5: Update odometry
 
     // TODO 1.2.2: Call tankDrive()
-
+    tankDrive(Robot.driver.getForwardTranslation(), Robot.driver.getLeftTranslation());
     // TODO 3.1.1: Remove all of the tank drive code in this method
 
     // TODO 2.1.3: Update sim if in simulation
     
   }
+
+@Override
+public void simulationPeriodic() {
+  System.out.println("Left Motor Voltage: " + leftMotor1.get()  + " Right Motor Voltage: " + rightMotor1.get());
+  driveTrainSim.setInputs(leftMotor1.get() * 12, rightMotor1.get() * 12);
+  driveTrainSim.update(Constants.LOOP_TIME);
+
+
+}
 
   /**
    * Drives the robot using tank drive controls. Tank drive is slightly easier to code but less
@@ -62,9 +87,10 @@ public class Drivetrain extends SubsystemBase {
    */
   public void tankDrive(double leftPower, double rightPower) {
     // TODO 1.2.1: Implement tankDrive
-
+    leftMotor1.set(leftPower * 0.25);
+    rightMotor1.set(rightPower * 0.25);
     // TODO 2.1.2: If in sim, set sim inputs
-
+    
   }
 
   /**
