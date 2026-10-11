@@ -13,10 +13,11 @@ import edu.wpi.first.math.util.Units;
 public class DriveConstants {
 
   // TODO 1.1.1: Set these
-  public static final int LEFT_MOTOR_1_ID = -1;
-  public static final int LEFT_MOTOR_2_ID = -1;
-  public static final int RIGHT_MOTOR_1_ID = -1;
-  public static final int RIGHT_MOTOR_2_ID = -1;
+  public static final int LEFT_MOTOR_1_ID = 1;
+  public static final int LEFT_MOTOR_2_ID = 2;
+  public static final int RIGHT_MOTOR_1_ID = 3;
+  public static final int RIGHT_MOTOR_2_ID = 4;
+
 
   // TODO 6.1.3: Add FF and PID constants
 
@@ -26,13 +27,14 @@ public class DriveConstants {
 
   // Diameter of the wheels in meters
   public static final double WHEEL_DIAMETER = Units.inchesToMeters(4);
+  public static final double circumference = WHEEL_DIAMETER * Math.PI;
 
   // Width of the robot in meters.
   public static final double TRACK_WIDTH = Units.inchesToMeters(24.405);
 
   // The motor type and amount, used for simulation
   @SuppressWarnings("unused")
-  public static final DCMotor MOTOR = DCMotor.getNEO(LEFT_MOTOR_2_ID < 0 ? 1 : 2);
+  public static final DCMotor MOTOR = DCMotor.getNEO(2);
 
   // Drivetrain dynamics, used for simulation
   public static final LinearSystem<N2, N2, N2> DRIVETRAIN_PLANT = LinearSystemId.createDrivetrainVelocitySystem(
@@ -45,7 +47,7 @@ public class DriveConstants {
   );
 
   // Simulation noise standard deviations
-  public static final Matrix<N7, N1> MEASUREMENT_STD_DEVS = VecBuilder.fill(0.001, 0.001, 0.001, 0.1, 0.1, 0.005, 0.005);
+  public static final Matrix<N7, N1> MEASUREMENT_STD_DEVS = null;//VecBuilder.fill(0.001, 0.001, 0.001, 0.1, 0.1, 0.005, 0.005);
 
   public static final double S = 0; // Friction is very difficult to calculate, since it ideally is negligible
   public static final double V = 2*GEAR_RATIO/WHEEL_DIAMETER/MOTOR.KvRadPerSecPerVolt;

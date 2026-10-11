@@ -29,7 +29,8 @@ public class Field {
 
     public void updateFeild(){
         updateModulePositions();
-        field.setRobotPose(chassisPose);
+        //field.setRobotPose(chassisPose);
+        field.setRobotPose(drive.getPose());
     }
 
 }
