@@ -13,10 +13,10 @@ import edu.wpi.first.math.util.Units;
 public class DriveConstants {
 
   // TODO 1.1.1: Set these
-  public static final int LEFT_MOTOR_1_ID = 1;
-  public static final int LEFT_MOTOR_2_ID = 2;
-  public static final int RIGHT_MOTOR_1_ID = 3;
-  public static final int RIGHT_MOTOR_2_ID = 4;
+  public static final int LEFT_MOTOR_1_ID = -1;
+  public static final int LEFT_MOTOR_2_ID = -1;
+  public static final int RIGHT_MOTOR_1_ID = -1;
+  public static final int RIGHT_MOTOR_2_ID = -1;
 
   // TODO 6.1.3: Add FF and PID constants
 
@@ -53,5 +53,4 @@ public class DriveConstants {
   public static final double P = 2; // This value is a guess; tune if it doesn't work
   public static final double I = 0; // Do not add this for velocity control
   public static final double D = 0; // This shouldn't be needed for velocity control, but might be good to add if it oscillates
-  public static final double massKg = 0;
 }
