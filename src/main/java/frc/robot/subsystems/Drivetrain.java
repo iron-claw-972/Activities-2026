@@ -132,7 +132,8 @@ public class Drivetrain extends SubsystemBase {
   // TODO 2.2.2: Implement these 4 methods
   public double getLeftPosition(){
     return leftMotor1.getEncoder().getPosition();
-    
+    //getEncoder function helps you get position
+    //CREATE wrapper function 
   }
   public double getRightPosition(){
     return rightMotor1.getEncoder().getPosition();
@@ -171,3 +172,6 @@ public class Drivetrain extends SubsystemBase {
 
   }
 }
+
+
+

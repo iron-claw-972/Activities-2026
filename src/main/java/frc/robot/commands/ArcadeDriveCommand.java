@@ -14,6 +14,7 @@ public class ArcadeDriveCommand extends Command{
 
     @Override
     public void execute() {
-        drive.arcadeDrive(Robot.driver.getForwardTranslation(), Robot.driver.getRightTranslation());
+        drive.arcadeDrive(Robot.drive.getLeftPosition(), Robot.driver.getRightTranslation());
+        Robot.driver.getTurn();
     }
 }
